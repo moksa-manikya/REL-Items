@@ -1,0 +1,16 @@
+{
+  "short_name": "Rel Report Tool",
+  "name": "Rel Report Tool_EVT_20260603_V1",
+  "icons": [
+    {
+      "src": "REL Items.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "./index.html",
+  "background_color": "#1E40AF",
+  "theme_color": "#1E40AF",
+  "display": "standalone",
+  "orientation": "portrait"
+}
