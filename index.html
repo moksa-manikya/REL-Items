@@ -1,0 +1,2362 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>REL測試項目彙整與清單管理</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+
+    <style>
+        html, body, #root { height: 100%; margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-tap-highlight-color: transparent; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-100 to-blue-50 overflow-auto select-none">
+
+    <div id="root"></div>
+
+    <script>
+        const { useState, useRef, useEffect } = React;
+        const e = React.createElement;
+
+        // 💡 ── 程式人員預設版本管理區 ──────────────────────────────────────────
+        // 程式人員可以在此陣列中直接寫死系統預設需要的 8 個或更多版本
+        const DEFAULT_VERSIONS = [
+              {
+                id: "20260603_V1_EVT",
+                name: "20260603_V1_EVT",
+                items: [
+                    "1@6 OE",
+"2@7 TEMPLE/L",
+"3@8 TEMPLE/R",
+"4@9 BRIDGE FLEX",
+"5@10 HIGHWAY FLEX",
+"6@11 IR CAM/B R",
+"7@12 IR CAM/B L",
+"8@13 CAMERA R",
+"9@14 CAMERA L",
+"10@15 FRONT COVER",
+"11@16 OE MID-CHASSIS",
+"12@17 SOC R",
+"13@18 VAPOR CHAMBER R",
+"14@19 WIFI/B",
+"15@20 CHARGE FLEX R",
+"16@21 BATTERY R",
+"17@22 SPEAKER R",
+"18@23 SOC L",
+"19@24 VAPOR CHAMBER L",
+"20@25 CHARGE FLEX L",
+"21@26 GPS RIGID FLEX L",
+"22@27 BATTERY L",
+"23@28 SPEAKER L",
+"24@29 DIMMABLE GLASS/L",
+"25@30 DIMMABLE GLASS/R",
+"26@31 CAMERA MODULE R",
+"27@32 IMU/B R",
+"28@33 CAMERA MODULE L",
+"29@34 IMU/B L",
+"30@43 BT_Mac_SF",
+"31@52 WIFI_Mac_SF",
+"32@55 BUTTON/B R",
+"33@56 BUTTON/B L",
+"34@57 REAR COVER",
+"35@58 MIC RIGHT FPC",
+"36@59 MIC LEFT FPC",
+"37@104 FW_Ver",
+"38@112 Battery Right Voltage",
+"39@114 Battery Right Temp",
+"40@117 Battery Left Voltage",
+"41@119 Battery Left Temp",
+"42@137 LED_0_On",
+"43@143 LED_0_Off",
+"44@149 LED_1_On",
+"45@155 LED_1_Off",
+"46@161 LED_2_On",
+"47@167 LED_2_Off",
+"48@173 LED_3_On",
+"49@179 LED_3_Off",
+"50@185 LED_4_On",
+"51@191 LED_4_Off",
+"52@198 LED_5_On",
+"53@205 LED_5_Off",
+"54@208 LED_All_On",
+"55@218 AR1_DEVICE_SN(root)",
+"56@219 AR2_DEVICE_SN(root)",
+"57@221 power_ar1_start",
+"58@223 power_ar2_start",
+"59@227 app_temple_inner_start",
+"60@230 app_temple_outer_start",
+"61@233 l_temp_start",
+"62@235 r_temp_start",
+"63@239 cv_temple_inner_start",
+"64@242 cv_temple_outer_start",
+"65@244 AR1_Start_dT1",
+"66@246 AR1_Start_dT2",
+"67@248 AR2_Start_dT1",
+"68@250 AR2_Start_dT2",
+"69@258 remount_check",
+"70@266 power_monitor_left_pogo",
+"71@268 power_monitor_ar2",
+"72@270 fuel_gauge_left",
+"73@272 charger_left",
+"74@274 tca9536",
+"75@276 tcal9538",
+"76@278 power_monitor_right_pogo",
+"77@280 power_monitor_ar1",
+"78@282 power_monitor_kauai",
+"79@284 fuel_gauge_right",
+"80@286 charger_right",
+"81@287 hinge_sensor_left",
+"82@288 pd_controller_left",
+"83@289 eeprom_left",
+"84@290 usb_hub",
+"85@291 hinge_sensor_right",
+"86@292 temp_kauai",
+"87@293 pd_controller_right",
+"88@294 eeprom_right",
+"89@295 kauai_power_control",
+"90@296 self_check_result",
+"91@300 serial_number_rgb",
+"92@301 serial_number_mono",
+"93@302 serial_number_htr",
+"94@303 serial_number_htl",
+"95@304 serial_number_htcl",
+"96@305 serial_number_htcr",
+"97@313 GPS Present",
+"98@332 SPEAKER_RIGHT_FUN_Freq",
+"99@334 SPEAKER_RIGHT_FUN_AMP",
+"100@347 SPEAKER_LEFT_FUN_Freq",
+"101@349 SPEAKER_LEFT_FUN_AMP",
+"102@362 MIC1_FUN_Freq",
+"103@364 MIC1_FUN_AMP",
+"104@368 MIC2_FUN_Freq",
+"105@370 MIC2_FUN_AMP",
+"106@374 MIC3_FUN_Freq",
+"107@376 MIC3_FUN_AMP",
+"108@381 MIC4_FUN_Freq",
+"109@383 MIC4_FUN_AMP",
+"110@387 MIC5_FUN_Freq",
+"111@389 MIC5_FUN_AMP",
+"112@394 MIC6_FUN_Freq",
+"113@396 MIC6_FUN_AMP",
+"114@401 WIFI_MAC_READ",
+"115@403 WIFI_MAC_COMPARE",
+"116@408 BT_MAC_READ",
+"117@410 BT_MAC_COMPARE",
+"118@425 PROJECTOR_GET_STATUS",
+"119@430 BLACK_Red_0_Check_R",
+"120@432 BLACK_Green_0_Check_R",
+"121@434 BLACK_Blue_0_Check_R",
+"122@437 BLACK_Red_0_Check_L",
+"123@439 BLACK_Green_0_Check_L",
+"124@441 BLACK_Blue_0_Check_L",
+"125@442 Right_Projector_Black",
+"126@443 Left_Projector_Black",
+"127@448 WHITE_Red_255_Check_R",
+"128@450 WHITE_Green_255_Check_R",
+"129@452 WHITE_Blue_255_Check_R",
+"130@455 WHITE_Red_255_Check_L",
+"131@457 WHITE_Green_255_Check_L",
+"132@459 WHITE_Blue_255_Check_L",
+"133@461 Right_Projector_White",
+"134@462 Left_Projector_White",
+"135@464 power_ar1_middle",
+"136@466 power_ar2_middle",
+"137@470 app_temple_inner_middle",
+"138@473 app_temple_outer_middle",
+"139@476 l_temp_middle",
+"140@478 r_temp_middle",
+"141@482 cv_temple_inner_middle",
+"142@485 cv_temple_outer_middle",
+"143@487 AR1_middle_dT1",
+"144@489 AR1_middle_dT2",
+"145@491 AR2_middle_dT1",
+"146@493 AR2_middle_dT2",
+"147@501 RED_Red_255_Check_R",
+"148@508 RED_Red_255_Check_L",
+"149@515 Right_Projector_Red",
+"150@516 Left_Projector_Red",
+"151@524 GREEN_Green_255_Check_R",
+"152@531 GREEN_Green_255_Check_L",
+"153@538 Right_Projector_Green",
+"154@539 Left_Projector_Green",
+"155@547 BLUE_Blue_255_Check_R",
+"156@554 BLUE_Blue_255_Check_L",
+"157@561 Right_Projector_Blue",
+"158@562 Left_Projector_Blue",
+"159@574 grab_right_dimmer_init",
+"160@577 grab_left_dimmer_init",
+"161@586 grab_right_dimmer_on",
+"162@589 grab_left_dimmer_on",
+"163@594 grab_left_dimmer_off",
+"164@597 grab_right_dimmer_off",
+"165@608 dimmer_on_left",
+"166@609 dimmer_on_right",
+"167@611 dimmer_diff_left",
+"168@613 dimmer_diff_right",
+"169@645 AR1_PING_AR2",
+"170@655 IMU_L_READ",
+"171@660 IMU_R_READ",
+"172@665 Barometer_READ",
+"173@670 Magnetometer",
+"174@672 Hinge_Left_X",
+"175@673 Hinge_Left_Z",
+"176@674 Hinge_Right_X",
+"177@675 Hinge_Right_Z",
+"178@681 app_inner_tmp103b",
+"179@684 wifi_outer",
+"180@687 app_outer_tmp114a",
+"181@690 app_temple_inner",
+"182@696 cv_temple_outer",
+"183@699 cv_temple_inner",
+"184@705 Read Button Left Unpressed",
+"185@712 Read Button Left Pressed",
+"186@719 Read Button Right Unpressed",
+"187@726 Read Button Right Pressed",
+"188@747 RGB_TAKE_PIC_CHECK",
+"189@752 Mono_TAKE_PIC_CHECK",
+"190@761 IR_TAKE_PIC_CHECK",
+"191@765 camera_image_calculate",
+"192@767 limit_version",
+"193@769 limit_mode",
+"194@770 write_calibration",
+"195@772 mock_cams",
+"196@774 station/test/get_cbd/0/pass",
+"197@776 station/all_tests_run",
+"198@778 station/test/get_cbd/1/pass",
+"199@780 station/test/get_cbd/2/pass",
+"200@782 station/test/get_cbd/3/pass",
+"201@784 station/test/get_cbd/4/pass",
+"202@786 station/test/get_cbd/5/pass",
+"203@790 device/cbd_mean_mono",
+"204@794 device/cbd_max_mono",
+"205@798 device/blemish_mono",
+"206@800 station/test/get_cbd/0/cycle_time",
+"207@804 device/wb_hi_rg_rgb",
+"208@808 device/wb_hi_bg_rgb",
+"209@812 device/cbd_mean_rgb",
+"210@816 device/cbd_max_rgb",
+"211@820 device/blemish_rgb",
+"212@822 station/test/get_cbd/1/cycle_time",
+"213@826 device/cbd_mean_irbl",
+"214@830 device/cbd_max_irbl",
+"215@834 device/blemish_irbl",
+"216@836 station/test/get_cbd/2/cycle_time",
+"217@840 device/cbd_mean_irbr",
+"218@844 device/cbd_max_irbr",
+"219@848 device/blemish_irbr",
+"220@850 station/test/get_cbd/3/cycle_time",
+"221@854 device/cbd_mean_ircl",
+"222@858 device/cbd_max_ircl",
+"223@862 device/blemish_ircl",
+"224@864 station/test/get_cbd/4/cycle_time",
+"225@868 device/cbd_mean_ircr",
+"226@872 device/cbd_max_ircr",
+"227@876 device/blemish_ircr",
+"228@878 station/test/get_cbd/5/cycle_time",
+"229@883 power_ar1_end",
+"230@885 power_ar2_end",
+"231@889 app_temple_inner_end",
+"232@892 app_temple_outer_end",
+"233@895 l_temp_end",
+"234@897 r_temp_end",
+"235@901 cv_temple_inner_end",
+"236@904 cv_temple_outer_end",
+"237@906 AR1_end_dT1",
+"238@908 AR1_end_dT2",
+"239@910 AR2_end_dT1",
+"240@912 AR2_end_dT2"
+
+                ],
+                createdAt: "2026/06/03 12:00"
+            },
+            {
+                id: "20260525_V1_EVT",
+                name: "20260525_V1_EVT",
+                items: [
+     "1@104 FW_Ver",
+"2@112 Battery Right Voltage",
+"3@114 Battery Right Temp",
+"4@117 Battery Left Voltage",
+"5@119 Battery Left Temp",
+"6@137 LED_0_On",
+"7@143 LED_0_Off",
+"8@149 LED_1_On",
+"9@155 LED_1_Off",
+"10@161 LED_2_On",
+"11@167 LED_2_Off",
+"12@173 LED_3_On",
+"13@179 LED_3_Off",
+"14@185 LED_4_On",
+"15@191 LED_4_Off",
+"16@198 LED_5_On",
+"17@205 LED_5_Off",
+"18@214 AR1_DEVICE_SN(root)",
+"19@215 AR2_DEVICE_SN(root)",
+"20@217 power_ar1_start",
+"21@219 power_ar2_start",
+"22@223 app_temple_inner_start",
+"23@226 app_temple_outer_start",
+"24@229 l_temp_start",
+"25@231 r_temp_start",
+"26@235 cv_temple_inner_start",
+"27@238 cv_temple_outer_start",
+"28@240 AR1_Start_dT1",
+"29@242 AR1_Start_dT2",
+"30@244 AR2_Start_dT1",
+"31@246 AR2_Start_dT2",
+"32@254 remount_check",
+"33@262 power_monitor_left_pogo",
+"34@264 power_monitor_ar2",
+"35@266 fuel_gauge_left",
+"36@268 charger_left",
+"37@270 tca9536",
+"38@272 tcal9538",
+"39@274 power_monitor_right_pogo",
+"40@276 power_monitor_ar1",
+"41@278 power_monitor_kauai",
+"42@280 fuel_gauge_right",
+"43@282 charger_right",
+"44@283 hinge_sensor_left",
+"45@284 pd_controller_left",
+"46@285 eeprom_left",
+"47@286 usb_hub",
+"48@287 hinge_sensor_right",
+"49@288 temp_kauai",
+"50@289 pd_controller_right",
+"51@290 eeprom_right",
+"52@291 kauai_power_control",
+"53@292 self_check_result",
+"54@296 serial_number_rgb",
+"55@297 serial_number_mono",
+"56@298 serial_number_htr",
+"57@299 serial_number_htl",
+"58@300 serial_number_htcl",
+"59@301 serial_number_htcr",
+"60@309 GPS Present",
+"61@328 SPEAKER_RIGHT_FUN_Freq",
+"62@330 SPEAKER_RIGHT_FUN_AMP",
+"63@343 SPEAKER_LEFT_FUN_Freq",
+"64@345 SPEAKER_LEFT_FUN_AMP",
+"65@358 MIC1_FUN_Freq",
+"66@360 MIC1_FUN_AMP",
+"67@364 MIC2_FUN_Freq",
+"68@366 MIC2_FUN_AMP",
+"69@370 MIC3_FUN_Freq",
+"70@372 MIC3_FUN_AMP",
+"71@377 MIC4_FUN_Freq",
+"72@379 MIC4_FUN_AMP",
+"73@383 MIC5_FUN_Freq",
+"74@385 MIC5_FUN_AMP",
+"75@390 MIC6_FUN_Freq",
+"76@392 MIC6_FUN_AMP",
+"77@397 WIFI_MAC_READ",
+"78@403 BT_MAC_READ",
+"79@419 PROJECTOR_GET_STATUS",
+"80@424 BLACK_Red_0_Check_R",
+"81@426 BLACK_Green_0_Check_R",
+"82@428 BLACK_Blue_0_Check_R",
+"83@431 BLACK_Red_0_Check_L",
+"84@433 BLACK_Green_0_Check_L",
+"85@435 BLACK_Blue_0_Check_L",
+"86@436 Right_Projector_Black",
+"87@437 Left_Projector_Black",
+"88@442 WHITE_Red_255_Check_R",
+"89@444 WHITE_Green_255_Check_R",
+"90@446 WHITE_Blue_255_Check_R",
+"91@449 WHITE_Red_255_Check_L",
+"92@451 WHITE_Green_255_Check_L",
+"93@453 WHITE_Blue_255_Check_L",
+"94@455 Right_Projector_White",
+"95@456 Left_Projector_White",
+"96@458 power_ar1_middle",
+"97@460 power_ar2_middle",
+"98@464 app_temple_inner_middle",
+"99@467 app_temple_outer_middle",
+"100@470 l_temp_middle",
+"101@472 r_temp_middle",
+"102@476 cv_temple_inner_middle",
+"103@479 cv_temple_outer_middle",
+"104@481 AR1_middle_dT1",
+"105@483 AR1_middle_dT2",
+"106@485 AR2_middle_dT1",
+"107@487 AR2_middle_dT2",
+"108@495 RED_Red_255_Check_R",
+"109@502 RED_Red_255_Check_L",
+"110@509 Right_Projector_Red",
+"111@510 Left_Projector_Red",
+"112@518 GREEN_Green_255_Check_R",
+"113@525 GREEN_Green_255_Check_L",
+"114@532 Right_Projector_Green",
+"115@533 Left_Projector_Green",
+"116@541 BLUE_Blue_255_Check_R",
+"117@548 BLUE_Blue_255_Check_L",
+"118@555 Right_Projector_Blue",
+"119@556 Left_Projector_Blue",
+"120@568 grab_right_dimmer_init",
+"121@571 grab_left_dimmer_init",
+"122@580 grab_right_dimmer_on",
+"123@583 grab_left_dimmer_on",
+"124@588 grab_right_dimmer_off",
+"125@591 grab_left_dimmer_off",
+"126@602 dimmer_on_left",
+"127@603 dimmer_on_right",
+"128@605 dimmer_diff_left",
+"129@607 dimmer_diff_right",
+"130@639 AR1_PING_AR2",
+"131@649 IMU_L_READ",
+"132@654 IMU_R_READ",
+"133@659 Barometer_READ",
+"134@664 Magnetometer",
+"135@666 Hinge_Left_X",
+"136@667 Hinge_Left_Z",
+"137@668 Hinge_Right_X",
+"138@669 Hinge_Right_Z",
+"139@675 app_inner_tmp103b",
+"140@678 wifi_outer",
+"141@681 app_outer_tmp114a",
+"142@684 app_temple_inner",
+"143@690 cv_temple_outer",
+"144@693 cv_temple_inner",
+"145@699 Read Button Left Unpressed",
+"146@706 Read Button Left Pressed",
+"147@713 Read Button Right Unpressed",
+"148@720 Read Button Right Pressed",
+"149@741 RGB_TAKE_PIC_CHECK",
+"150@746 Mono_TAKE_PIC_CHECK",
+"151@755 IR_TAKE_PIC_CHECK",
+"152@759 camera_image_calculate",
+"153@761 limit_version",
+"154@763 limit_mode",
+"155@764 write_calibration",
+"156@766 mock_cams",
+"157@768 station/test/get_cbd/0/pass",
+"158@770 station/all_tests_run",
+"159@772 station/test/get_cbd/1/pass",
+"160@774 station/test/get_cbd/2/pass",
+"161@776 station/test/get_cbd/3/pass",
+"162@778 station/test/get_cbd/4/pass",
+"163@780 station/test/get_cbd/5/pass",
+"164@784 device/cbd_mean_mono",
+"165@788 device/cbd_max_mono",
+"166@792 device/blemish_mono",
+"167@794 station/test/get_cbd/0/cycle_time",
+"168@798 device/wb_hi_rg_rgb",
+"169@802 device/wb_hi_bg_rgb",
+"170@806 device/cbd_mean_rgb",
+"171@810 device/cbd_max_rgb",
+"172@814 device/blemish_rgb",
+"173@816 station/test/get_cbd/1/cycle_time",
+"174@820 device/cbd_mean_irbl",
+"175@824 device/cbd_max_irbl",
+"176@828 device/blemish_irbl",
+"177@830 station/test/get_cbd/2/cycle_time",
+"178@834 device/cbd_mean_irbr",
+"179@838 device/cbd_max_irbr",
+"180@842 device/blemish_irbr",
+"181@844 station/test/get_cbd/3/cycle_time",
+"182@848 device/cbd_mean_ircl",
+"183@852 device/cbd_max_ircl",
+"184@856 device/blemish_ircl",
+"185@858 station/test/get_cbd/4/cycle_time",
+"186@862 device/cbd_mean_ircr",
+"187@866 device/cbd_max_ircr",
+"188@870 device/blemish_ircr",
+"189@872 station/test/get_cbd/5/cycle_time",
+"190@877 power_ar1_end",
+"191@879 power_ar2_end",
+"192@883 app_temple_inner_end",
+"193@886 app_temple_outer_end",
+"194@889 l_temp_end",
+"195@891 r_temp_end",
+"196@895 cv_temple_inner_end",
+"197@898 cv_temple_outer_end",
+"198@900 AR1_end_dT1",
+"199@902 AR1_end_dT2",
+"200@904 AR2_end_dT1",
+"201@906 AR2_end_dT2"
+
+                ],
+
+                createdAt: "2026/05/25 12:00"
+            },
+            {
+                id: "20260121_V1_Proto C",
+                name: "20260121_V1_Proto C",
+                items: [
+                    "1@103 FW_Ver",
+"2@111 Battery Right Voltage",
+"3@113 Battery Right Temp",
+"4@116 Battery Left Voltage",
+"5@118 Battery Left Temp",
+"6@137 LED_0_On",
+"7@144 LED_0_Off",
+"8@151 LED_1_On",
+"9@158 LED_1_Off",
+"10@165 LED_2_On",
+"11@172 LED_2_Off",
+"12@179 LED_3_On",
+"13@186 LED_3_Off",
+"14@193 LED_4_On",
+"15@200 LED_4_Off",
+"16@207 LED_5_On",
+"17@214 LED_5_Off",
+"18@223 AR1_DEVICE_SN(root)",
+"19@224 AR2_DEVICE_SN(root)",
+"20@226 power_ar1_start",
+"21@228 power_ar2_start",
+"22@232 app_temple_inner_start",
+"23@235 app_temple_outer_start",
+"24@238 l_temp_start",
+"25@240 r_temp_start",
+"26@244 cv_temple_inner_start",
+"27@247 cv_temple_outer_start",
+"28@249 AR1_Start_dT1",
+"29@251 AR1_Start_dT2",
+"30@253 AR2_Start_dT1",
+"31@255 AR2_Start_dT2",
+"32@263 remount_check",
+"33@271 power_monitor_left_pogo",
+"34@273 power_monitor_ar2",
+"35@275 fuel_gauge_left",
+"36@277 charger_left",
+"37@279 tca9536",
+"38@281 tcal9538",
+"39@283 power_monitor_right_pogo",
+"40@285 power_monitor_ar1",
+"41@287 power_monitor_kauai",
+"42@289 fuel_gauge_right",
+"43@291 charger_right",
+"44@295 serial_number_rgb",
+"45@296 serial_number_mono",
+"46@297 serial_number_htr",
+"47@298 serial_number_htl",
+"48@299 serial_number_htcl",
+"49@300 serial_number_htcr",
+"50@308 GPS Present",
+"51@327 SPEAKER_RIGHT_FUN_Freq",
+"52@329 SPEAKER_RIGHT_FUN_AMP",
+"53@342 SPEAKER_LEFT_FUN_Freq",
+"54@344 SPEAKER_LEFT_FUN_AMP",
+"55@357 MIC1_FUN_Freq",
+"56@359 MIC1_FUN_AMP",
+"57@363 MIC2_FUN_Freq",
+"58@365 MIC2_FUN_AMP",
+"59@369 MIC3_FUN_Freq",
+"60@371 MIC3_FUN_AMP",
+"61@376 MIC4_FUN_Freq",
+"62@378 MIC4_FUN_AMP",
+"63@382 MIC5_FUN_Freq",
+"64@384 MIC5_FUN_AMP",
+"65@389 MIC6_FUN_Freq",
+"66@391 MIC6_FUN_AMP",
+"67@396 WIFI_MAC_READ",
+"68@402 BT_MAC_READ",
+"69@417 PROJECTOR_GET_STATUS",
+"70@422 BLACK_Red_0_Check_R",
+"71@424 BLACK_Green_0_Check_R",
+"72@426 BLACK_Blue_0_Check_R",
+"73@429 BLACK_Red_0_Check_L",
+"74@431 BLACK_Green_0_Check_L",
+"75@433 BLACK_Blue_0_Check_L",
+"76@434 Right_Projector_Black",
+"77@435 Left_Projector_Black",
+"78@440 WHITE_Red_255_Check_R",
+"79@442 WHITE_Green_255_Check_R",
+"80@444 WHITE_Blue_255_Check_R",
+"81@447 WHITE_Red_255_Check_L",
+"82@449 WHITE_Green_255_Check_L",
+"83@451 WHITE_Blue_255_Check_L",
+"84@453 Right_Projector_White",
+"85@454 Left_Projector_White",
+"86@456 power_ar1_middle",
+"87@458 power_ar2_middle",
+"88@462 app_temple_inner_middle",
+"89@465 app_temple_outer_middle",
+"90@468 l_temp_middle",
+"91@470 r_temp_middle",
+"92@474 cv_temple_inner_middle",
+"93@477 cv_temple_outer_middle",
+"94@479 AR1_middle_dT1",
+"95@481 AR1_middle_dT2",
+"96@483 AR2_middle_dT1",
+"97@485 AR2_middle_dT2",
+"98@493 RED_Red_255_Check_R",
+"99@500 RED_Red_255_Check_L",
+"100@507 Right_Projector_Red",
+"101@508 Left_Projector_Red",
+"102@516 GREEN_Green_255_Check_R",
+"103@523 GREEN_Green_255_Check_L",
+"104@530 Right_Projector_Green",
+"105@531 Left_Projector_Green",
+"106@539 BLUE_Blue_255_Check_R",
+"107@546 BLUE_Blue_255_Check_L",
+"108@553 Right_Projector_Blue",
+"109@554 Left_Projector_Blue",
+"110@566 grab_right_dimmer_init",
+"111@569 grab_left_dimmer_init",
+"112@578 grab_right_dimmer_on",
+"113@581 grab_left_dimmer_on",
+"114@586 grab_right_dimmer_off",
+"115@589 grab_left_dimmer_off",
+"116@600 dimmer_on_left",
+"117@601 dimmer_on_right",
+"118@603 dimmer_diff_left",
+"119@605 dimmer_diff_right",
+"120@638 AR1_PING_AR2",
+"121@648 IMU_L_READ",
+"122@653 IMU_R_READ",
+"123@658 Barometer_READ",
+"124@663 Magnetometer",
+"125@666 Hall sensor Left",
+"126@669 Hall sensor Right",
+"127@671 Hinge_Left_X",
+"128@672 Hinge_Left_Z",
+"129@673 Hinge_Right_X",
+"130@674 Hinge_Right_Z",
+"131@680 app_inner_tmp103b",
+"132@683 wifi_outer",
+"133@686 app_outer_tmp114a",
+"134@689 app_temple_inner",
+"135@695 cv_temple_outer",
+"136@698 cv_temple_inner",
+"137@703 Read Button Left Unpressed",
+"138@710 Read Button Left Pressed",
+"139@717 Read Button Right Unpressed",
+"140@724 Read Button Right Pressed",
+"141@745 RGB_TAKE_PIC_CHECK",
+"142@750 Mono_TAKE_PIC_CHECK",
+"143@759 IR_TAKE_PIC_CHECK",
+"144@763 camera_image_calculate",
+"145@765 limit_version",
+"146@767 limit_mode",
+"147@768 write_calibration",
+"148@770 mock_cams",
+"149@772 station/test/get_cbd/0/pass",
+"150@774 station/all_tests_run",
+"151@776 station/test/get_cbd/1/pass",
+"152@778 station/test/get_cbd/2/pass",
+"153@780 station/test/get_cbd/3/pass",
+"154@782 station/test/get_cbd/4/pass",
+"155@784 station/test/get_cbd/5/pass",
+"156@788 device/cbd_mean_mono",
+"157@792 device/cbd_max_mono",
+"158@796 device/blemish_mono",
+"159@798 station/test/get_cbd/0/cycle_time",
+"160@802 device/wb_hi_rg_rgb",
+"161@806 device/wb_hi_bg_rgb",
+"162@810 device/cbd_mean_rgb",
+"163@814 device/cbd_max_rgb",
+"164@818 device/blemish_rgb",
+"165@820 station/test/get_cbd/1/cycle_time",
+"166@824 device/cbd_mean_irbl",
+"167@828 device/cbd_max_irbl",
+"168@832 device/blemish_irbl",
+"169@834 station/test/get_cbd/2/cycle_time",
+"170@838 device/cbd_mean_irbr",
+"171@842 device/cbd_max_irbr",
+"172@846 device/blemish_irbr",
+"173@848 station/test/get_cbd/3/cycle_time",
+"174@852 device/cbd_mean_ircl",
+"175@856 device/cbd_max_ircl",
+"176@860 device/blemish_ircl",
+"177@862 station/test/get_cbd/4/cycle_time",
+"178@866 device/cbd_mean_ircr",
+"179@870 device/cbd_max_ircr",
+"180@874 device/blemish_ircr",
+"181@876 station/test/get_cbd/5/cycle_time",
+"182@881 power_ar1_end",
+"183@883 power_ar2_end",
+"184@887 app_temple_inner_end",
+"185@890 app_temple_outer_end",
+"186@893 l_temp_end",
+"187@895 r_temp_end",
+"188@899 cv_temple_inner_end",
+"189@902 cv_temple_outer_end",
+"190@904 AR1_end_dT1",
+"191@906 AR1_end_dT2",
+"192@908 AR2_end_dT1",
+"193@910 AR2_end_dT2"
+
+                ],
+                createdAt: "2026/01/21 12:00"
+            },
+            {
+                id: "20260109_V1_Proto C",
+                name: "20260109_V1_Proto C",
+                items: [
+                    "1@3 OE",
+"2@4 TEMPLE/L",
+"3@5 TEMPLE/R",
+"4@6 BRIDGE FLEX",
+"5@7 HIGHWAY FLEX",
+"6@8 IR CAM/B R",
+"7@9 IR CAM/B L",
+"8@10 CAMERA R",
+"9@11 CAMERA L",
+"10@12 FRONT COVER",
+"11@13 OE MID-CHASSIS",
+"12@14 SOC R",
+"13@15 VAPOR CHAMBER R",
+"14@16 WIFI/B",
+"15@17 CHARGE FLEX R",
+"16@18 BATTERY R",
+"17@19 SPEAKER R",
+"18@20 SOC L",
+"19@21 VAPOR CHAMBER L",
+"20@22 CHARGE FLEX L",
+"21@23 GPS RIGID FLEX L",
+"22@24 BATTERY L",
+"23@25 SPEAKER L",
+"24@26 BUTTON/B R",
+"25@27 BUTTON/B L",
+"26@28 DIMMABLE GLASS/L",
+"27@29 DIMMABLE GLASS/R",
+"28@30 CAMERA MODULE R",
+"29@31 IMU/B R",
+"30@32 CAMERA MODULE L",
+"31@33 IMU/B L",
+"32@42 BT_Mac_SF",
+"33@51 WIFI_Mac_SF",
+"34@56 REAR COVER",
+"35@57 MIC RIGHT FPC",
+"36@58 MIC LEFT FPC",
+"37@103 FW_Ver",
+"38@111 Battery Right Voltage",
+"39@113 Battery Right Temp",
+"40@116 Battery Left Voltage",
+"41@118 Battery Left Temp",
+"42@137 LED_0_On",
+"43@144 LED_0_Off",
+"44@151 LED_1_On",
+"45@158 LED_1_Off",
+"46@165 LED_2_On",
+"47@172 LED_2_Off",
+"48@179 LED_3_On",
+"49@186 LED_3_Off",
+"50@193 LED_4_On",
+"51@200 LED_4_Off",
+"52@207 LED_5_On",
+"53@214 LED_5_Off",
+"54@223 AR1_DEVICE_SN(root)",
+"55@224 AR2_DEVICE_SN(root)",
+"56@226 power_ar1_start",
+"57@228 power_ar2_start",
+"58@232 app_temple_inner_start",
+"59@235 app_temple_outer_start",
+"60@238 l_temp_start",
+"61@240 r_temp_start",
+"62@244 cv_temple_inner_start",
+"63@247 cv_temple_outer_start",
+"64@249 AR1_Start_dT1",
+"65@251 AR1_Start_dT2",
+"66@253 AR2_Start_dT1",
+"67@255 AR2_Start_dT2",
+"68@263 remount_check",
+"69@271 power_monitor_left_pogo",
+"70@273 power_monitor_ar2",
+"71@275 fuel_gauge_left",
+"72@277 charger_left",
+"73@279 tca9536",
+"74@281 tcal9538",
+"75@283 power_monitor_right_pogo",
+"76@285 power_monitor_ar1",
+"77@287 power_monitor_kauai",
+"78@289 fuel_gauge_right",
+"79@291 charger_right",
+"80@295 serial_number_rgb",
+"81@296 serial_number_mono",
+"82@297 serial_number_htr",
+"83@298 serial_number_htl",
+"84@299 serial_number_htcl",
+"85@300 serial_number_htcr",
+"86@308 GPS Present",
+"87@327 SPEAKER_RIGHT_FUN_Freq",
+"88@329 SPEAKER_RIGHT_FUN_AMP",
+"89@342 SPEAKER_LEFT_FUN_Freq",
+"90@344 SPEAKER_LEFT_FUN_AMP",
+"91@357 MIC1_FUN_Freq",
+"92@359 MIC1_FUN_AMP",
+"93@363 MIC2_FUN_Freq",
+"94@365 MIC2_FUN_AMP",
+"95@369 MIC3_FUN_Freq",
+"96@371 MIC3_FUN_AMP",
+"97@376 MIC4_FUN_Freq",
+"98@378 MIC4_FUN_AMP",
+"99@382 MIC5_FUN_Freq",
+"100@384 MIC5_FUN_AMP",
+"101@389 MIC6_FUN_Freq",
+"102@391 MIC6_FUN_AMP",
+"103@396 WIFI_MAC_READ",
+"104@397 WIFI_MAC_COMPARE",
+"105@402 BT_MAC_READ",
+"106@403 BT_MAC_COMPARE",
+"107@417 PROJECTOR_GET_STATUS",
+"108@422 BLACK_Red_0_Check_R",
+"109@424 BLACK_Green_0_Check_R",
+"110@426 BLACK_Blue_0_Check_R",
+"111@429 BLACK_Red_0_Check_L",
+"112@431 BLACK_Green_0_Check_L",
+"113@433 BLACK_Blue_0_Check_L",
+"114@434 Right_Projector_Black",
+"115@435 Left_Projector_Black",
+"116@440 WHITE_Red_255_Check_R",
+"117@442 WHITE_Green_255_Check_R",
+"118@444 WHITE_Blue_255_Check_R",
+"119@447 WHITE_Red_255_Check_L",
+"120@449 WHITE_Green_255_Check_L",
+"121@451 WHITE_Blue_255_Check_L",
+"122@453 Right_Projector_White",
+"123@454 Left_Projector_White",
+"124@456 power_ar1_middle",
+"125@458 power_ar2_middle",
+"126@462 app_temple_inner_middle",
+"127@465 app_temple_outer_middle",
+"128@468 l_temp_middle",
+"129@470 r_temp_middle",
+"130@474 cv_temple_inner_middle",
+"131@477 cv_temple_outer_middle",
+"132@479 AR1_middle_dT1",
+"133@481 AR1_middle_dT2",
+"134@483 AR2_middle_dT1",
+"135@485 AR2_middle_dT2",
+"136@493 RED_Red_255_Check_R",
+"137@500 RED_Red_255_Check_L",
+"138@507 Right_Projector_Red",
+"139@508 Left_Projector_Red",
+"140@516 GREEN_Green_255_Check_R",
+"141@523 GREEN_Green_255_Check_L",
+"142@530 Right_Projector_Green",
+"143@531 Left_Projector_Green",
+"144@539 BLUE_Blue_255_Check_R",
+"145@546 BLUE_Blue_255_Check_L",
+"146@553 Right_Projector_Blue",
+"147@554 Left_Projector_Blue",
+"148@566 grab_right_dimmer_init",
+"149@569 grab_left_dimmer_init",
+"150@578 grab_right_dimmer_on",
+"151@581 grab_left_dimmer_on",
+"152@586 grab_right_dimmer_off",
+"153@589 grab_left_dimmer_off",
+"154@600 dimmer_on_left",
+"155@601 dimmer_on_right",
+"156@603 dimmer_diff_left",
+"157@605 dimmer_diff_right",
+"158@638 AR1_PING_AR2",
+"159@648 IMU_L_READ",
+"160@653 IMU_R_READ",
+"161@658 Barometer_READ",
+"162@663 Magnetometer",
+"163@666 Hall sensor Left",
+"164@669 Hall sensor Right",
+"165@671 Hinge_Left_X",
+"166@672 Hinge_Left_Z",
+"167@673 Hinge_Right_X",
+"168@674 Hinge_Right_Z",
+"169@680 app_inner_tmp103b",
+"170@683 wifi_outer",
+"171@686 app_outer_tmp114a",
+"172@689 app_temple_inner",
+"173@695 cv_temple_outer",
+"174@698 cv_temple_inner",
+"175@703 Read Button Left Unpressed",
+"176@710 Read Button Left Pressed",
+"177@717 Read Button Right Unpressed",
+"178@724 Read Button Right Pressed",
+"179@745 RGB_TAKE_PIC_CHECK",
+"180@750 Mono_TAKE_PIC_CHECK",
+"181@759 IR_TAKE_PIC_CHECK",
+"182@763 camera_image_calculate",
+"183@765 limit_version",
+"184@767 limit_mode",
+"185@768 write_calibration",
+"186@770 mock_cams",
+"187@772 station/test/get_cbd/0/pass",
+"188@774 station/all_tests_run",
+"189@776 station/test/get_cbd/1/pass",
+"190@778 station/test/get_cbd/2/pass",
+"191@780 station/test/get_cbd/3/pass",
+"192@782 station/test/get_cbd/4/pass",
+"193@784 station/test/get_cbd/5/pass",
+"194@788 device/cbd_mean_mono",
+"195@792 device/cbd_max_mono",
+"196@796 device/blemish_mono",
+"197@798 station/test/get_cbd/0/cycle_time",
+"198@802 device/wb_hi_rg_rgb",
+"199@806 device/wb_hi_bg_rgb",
+"200@810 device/cbd_mean_rgb",
+"201@814 device/cbd_max_rgb",
+"202@818 device/blemish_rgb",
+"203@820 station/test/get_cbd/1/cycle_time",
+"204@824 device/cbd_mean_irbl",
+"205@828 device/cbd_max_irbl",
+"206@832 device/blemish_irbl",
+"207@834 station/test/get_cbd/2/cycle_time",
+"208@838 device/cbd_mean_irbr",
+"209@842 device/cbd_max_irbr",
+"210@846 device/blemish_irbr",
+"211@848 station/test/get_cbd/3/cycle_time",
+"212@852 device/cbd_mean_ircl",
+"213@856 device/cbd_max_ircl",
+"214@860 device/blemish_ircl",
+"215@862 station/test/get_cbd/4/cycle_time",
+"216@866 device/cbd_mean_ircr",
+"217@870 device/cbd_max_ircr",
+"218@874 device/blemish_ircr",
+"219@876 station/test/get_cbd/5/cycle_time",
+"220@881 power_ar1_end",
+"221@883 power_ar2_end",
+"222@887 app_temple_inner_end",
+"223@890 app_temple_outer_end",
+"224@893 l_temp_end",
+"225@895 r_temp_end",
+"226@899 cv_temple_inner_end",
+"227@902 cv_temple_outer_end",
+"228@904 AR1_end_dT1",
+"229@906 AR1_end_dT2",
+"230@908 AR2_end_dT1",
+"231@910 AR2_end_dT2"
+
+                ],
+                createdAt: "2026/01/09 12:00"
+ },
+            {
+                id: "20251216_V1_Proto B",
+                name: "20251216_V1_Proto B",
+                items: [
+                    "1@103FW_Ver",
+"2@111Battery Right Voltage",
+"3@113Battery Right Temp",
+"4@116Battery Left Voltage",
+"5@118Battery Left Temp",
+"6@137LED_0_On",
+"7@144LED_0_Off",
+"8@151LED_1_On",
+"9@158LED_1_Off",
+"10@165LED_2_On",
+"11@172LED_2_Off",
+"12@179LED_3_On",
+"13@186LED_3_Off",
+"14@193LED_4_On",
+"15@200LED_4_Off",
+"16@207LED_5_On",
+"17@214LED_5_Off",
+"18@223AR1_DEVICE_SN(root)",
+"19@224AR2_DEVICE_SN(root)",
+"20@226power_ar1_start",
+"21@228power_ar2_start",
+"22@232app_temple_inner_start",
+"23@235app_temple_outer_start",
+"24@238l_temp_start",
+"25@240r_temp_start",
+"26@244cv_temple_inner_start",
+"27@247cv_temple_outer_start",
+"28@249AR1_Start_dT1",
+"29@251AR1_Start_dT2",
+"30@253AR2_Start_dT1",
+"31@255AR2_Start_dT2",
+"32@263remount_check",
+"33@271power_monitor_left_pogo",
+"34@273power_monitor_ar2",
+"35@275fuel_gauge_left",
+"36@277charger_left",
+"37@279tca9536",
+"38@281tcal9538",
+"39@283power_monitor_right_pogo",
+"40@285power_monitor_ar1",
+"41@287power_monitor_kauai",
+"42@289fuel_gauge_right",
+"43@291charger_right",
+"44@295serial_number_rgb",
+"45@296serial_number_mono",
+"46@297serial_number_htr",
+"47@298serial_number_htl",
+"48@299serial_number_htcl",
+"49@300serial_number_htcr",
+"50@308GPS Present",
+"51@327SPEAKER_RIGHT_FUN_Freq",
+"52@329SPEAKER_RIGHT_FUN_AMP",
+"53@342SPEAKER_LEFT_FUN_Freq",
+"54@344SPEAKER_LEFT_FUN_AMP",
+"55@357MIC1_FUN_Freq",
+"56@359MIC1_FUN_AMP",
+"57@363MIC2_FUN_Freq",
+"58@365MIC2_FUN_AMP",
+"59@369MIC3_FUN_Freq",
+"60@371MIC3_FUN_AMP",
+"61@376MIC4_FUN_Freq",
+"62@378MIC4_FUN_AMP",
+"63@382MIC5_FUN_Freq",
+"64@384MIC5_FUN_AMP",
+"65@389MIC6_FUN_Freq",
+"66@391MIC6_FUN_AMP",
+"67@396WIFI_MAC_READ",
+"68@402BT_MAC_READ",
+"69@417PROJECTOR_GET_STATUS",
+"70@422BLACK_Red_0_Check_R",
+"71@424BLACK_Green_0_Check_R",
+"72@426BLACK_Blue_0_Check_R",
+"73@429BLACK_Red_0_Check_L",
+"74@431BLACK_Green_0_Check_L",
+"75@433BLACK_Blue_0_Check_L",
+"76@434Right_Projector_Black",
+"77@435Left_Projector_Black",
+"78@440WHITE_Red_255_Check_R",
+"79@442WHITE_Green_255_Check_R",
+"80@444WHITE_Blue_255_Check_R",
+"81@447WHITE_Red_255_Check_L",
+"82@449WHITE_Green_255_Check_L",
+"83@451WHITE_Blue_255_Check_L",
+"84@453Right_Projector_White",
+"85@454Left_Projector_White",
+"86@456power_ar1_middle",
+"87@458power_ar2_middle",
+"88@462app_temple_inner_middle",
+"89@465app_temple_outer_middle",
+"90@468l_temp_middle",
+"91@470r_temp_middle",
+"92@474cv_temple_inner_middle",
+"93@477cv_temple_outer_middle",
+"94@479AR1_middle_dT1",
+"95@481AR1_middle_dT2",
+"96@483AR2_middle_dT1",
+"97@485AR2_middle_dT2",
+"98@493RED_Red_255_Check_R",
+"99@500RED_Red_255_Check_L",
+"100@507Right_Projector_Red",
+"101@508Left_Projector_Red",
+"102@516GREEN_Green_255_Check_R",
+"103@523GREEN_Green_255_Check_L",
+"104@530Right_Projector_Green",
+"105@531Left_Projector_Green",
+"106@539BLUE_Blue_255_Check_R",
+"107@546BLUE_Blue_255_Check_L",
+"108@553Right_Projector_Blue",
+"109@554Left_Projector_Blue",
+"110@566grab_right_dimmer_init",
+"111@569grab_left_dimmer_init",
+"112@578grab_right_dimmer_on",
+"113@581grab_left_dimmer_on",
+"114@586grab_right_dimmer_off",
+"115@589grab_left_dimmer_off",
+"116@600dimmer_on_left",
+"117@601dimmer_on_right",
+"118@603dimmer_diff_left",
+"119@605dimmer_diff_right",
+"120@638AR1_PING_AR2",
+"121@648IMU_L_READ",
+"122@653IMU_R_READ",
+"123@655Barometer_READ",
+"124@660Magnetometer",
+"125@663Hall sensor Left",
+"126@666Hall sensor Right",
+"127@668Hinge_Left_X",
+"128@669Hinge_Left_Z",
+"129@670Hinge_Right_X",
+"130@671Hinge_Right_Z",
+"131@677app_inner_tmp103b",
+"132@680wifi_outer",
+"133@683app_outer_tmp114a",
+"134@686app_temple_inner",
+"135@692cv_temple_outer",
+"136@695cv_temple_inner",
+"137@700Read Button Left Unpressed",
+"138@707Read Button Left Pressed",
+"139@714Read Button Right Unpressed",
+"140@721Read Button Right Pressed",
+"141@741RGB_TAKE_PIC_CHECK",
+"142@746Mono_TAKE_PIC_CHECK",
+"143@755IR_TAKE_PIC_CHECK",
+"144@759camera_image_calculate",
+"145@761limit_version",
+"146@763limit_mode",
+"147@764write_calibration",
+"148@766mock_cams",
+"149@768station/test/get_cbd/0/pass",
+"150@770station/all_tests_run",
+"151@772station/test/get_cbd/1/pass",
+"152@774station/test/get_cbd/2/pass",
+"153@776station/test/get_cbd/3/pass",
+"154@778station/test/get_cbd/4/pass",
+"155@780station/test/get_cbd/5/pass",
+"156@784device/cbd_mean_mono",
+"157@788device/cbd_max_mono",
+"158@792device/blemish_mono",
+"159@794station/test/get_cbd/0/cycle_time",
+"160@798device/wb_hi_rg_rgb",
+"161@802device/wb_hi_bg_rgb",
+"162@806device/cbd_mean_rgb",
+"163@810device/cbd_max_rgb",
+"164@814device/blemish_rgb",
+"165@816station/test/get_cbd/1/cycle_time",
+"166@820device/cbd_mean_irbl",
+"167@824device/cbd_max_irbl",
+"168@828device/blemish_irbl",
+"169@830station/test/get_cbd/2/cycle_time",
+"170@834device/cbd_mean_irbr",
+"171@838device/cbd_max_irbr",
+"172@842device/blemish_irbr",
+"173@844station/test/get_cbd/3/cycle_time",
+"174@848device/cbd_mean_ircl",
+"175@852device/cbd_max_ircl",
+"176@856device/blemish_ircl",
+"177@858station/test/get_cbd/4/cycle_time",
+"178@862device/cbd_mean_ircr",
+"179@866device/cbd_max_ircr",
+"180@870device/blemish_ircr",
+"181@872station/test/get_cbd/5/cycle_time",
+"182@877power_ar1_end",
+"183@879power_ar2_end",
+"184@883app_temple_inner_end",
+"185@886app_temple_outer_end",
+"186@889l_temp_end",
+"187@891r_temp_end",
+"188@895cv_temple_inner_end",
+"189@898cv_temple_outer_end",
+"190@900AR1_end_dT1",
+"191@902AR1_end_dT2",
+"192@904AR2_end_dT1",
+"193@906AR2_end_dT2"
+
+
+                ],
+                createdAt: "2026/01/09 12:00"
+ },
+            {
+                id: "20251216_V1_Proto B",
+                name: "20251216_V1_Proto B",
+                items: [
+                    "1@103 FW_Ver",
+"2@111 Battery Right Voltage",
+"3@113 Battery Right Temp",
+"4@116 Battery Left Voltage",
+"5@118 Battery Left Temp",
+"6@137 LED_0_On",
+"7@144 LED_0_Off",
+"8@151 LED_1_On",
+"9@158 LED_1_Off",
+"10@165 LED_2_On",
+"11@172 LED_2_Off",
+"12@179 LED_3_On",
+"13@186 LED_3_Off",
+"14@193 LED_4_On",
+"15@200 LED_4_Off",
+"16@207 LED_5_On",
+"17@214 LED_5_Off",
+"18@223 AR1_DEVICE_SN(root)",
+"19@224 AR2_DEVICE_SN(root)",
+"20@226 power_ar1_start",
+"21@228 power_ar2_start",
+"22@232 app_temple_inner_start",
+"23@235 app_temple_outer_start",
+"24@238 l_temp_start",
+"25@240 r_temp_start",
+"26@244 cv_temple_inner_start",
+"27@247 cv_temple_outer_start",
+"28@249 AR1_Start_dT1",
+"29@251 AR1_Start_dT2",
+"30@253 AR2_Start_dT1",
+"31@255 AR2_Start_dT2",
+"32@263 remount_check",
+"33@271 power_monitor_left_pogo",
+"34@273 power_monitor_ar2",
+"35@275 fuel_gauge_left",
+"36@277 charger_left",
+"37@279 tca9536",
+"38@281 tcal9538",
+"39@283 power_monitor_right_pogo",
+"40@285 power_monitor_ar1",
+"41@287 power_monitor_kauai",
+"42@289 fuel_gauge_right",
+"43@291 charger_right",
+"44@295 serial_number_rgb",
+"45@296 serial_number_mono",
+"46@297 serial_number_htr",
+"47@298 serial_number_htl",
+"48@299 serial_number_htcl",
+"49@300 serial_number_htcr",
+"50@308 GPS Present",
+"51@327 SPEAKER_RIGHT_FUN_Freq",
+"52@329 SPEAKER_RIGHT_FUN_AMP",
+"53@342 SPEAKER_LEFT_FUN_Freq",
+"54@344 SPEAKER_LEFT_FUN_AMP",
+"55@357 MIC1_FUN_Freq",
+"56@359 MIC1_FUN_AMP",
+"57@363 MIC2_FUN_Freq",
+"58@365 MIC2_FUN_AMP",
+"59@369 MIC3_FUN_Freq",
+"60@371 MIC3_FUN_AMP",
+"61@376 MIC4_FUN_Freq",
+"62@378 MIC4_FUN_AMP",
+"63@382 MIC5_FUN_Freq",
+"64@384 MIC5_FUN_AMP",
+"65@389 MIC6_FUN_Freq",
+"66@391 MIC6_FUN_AMP",
+"67@396 WIFI_MAC_READ",
+"68@402 BT_MAC_READ",
+"69@417 PROJECTOR_GET_STATUS",
+"70@422 BLACK_Red_0_Check_R",
+"71@424 BLACK_Green_0_Check_R",
+"72@426 BLACK_Blue_0_Check_R",
+"73@429 BLACK_Red_0_Check_L",
+"74@431 BLACK_Green_0_Check_L",
+"75@433 BLACK_Blue_0_Check_L",
+"76@434 Right_Projector_Black",
+"77@435 Left_Projector_Black",
+"78@440 WHITE_Red_255_Check_R",
+"79@442 WHITE_Green_255_Check_R",
+"80@444 WHITE_Blue_255_Check_R",
+"81@447 WHITE_Red_255_Check_L",
+"82@449 WHITE_Green_255_Check_L",
+"83@451 WHITE_Blue_255_Check_L",
+"84@453 Right_Projector_White",
+"85@454 Left_Projector_White",
+"86@456 power_ar1_middle",
+"87@458 power_ar2_middle",
+"88@462 app_temple_inner_middle",
+"89@465 app_temple_outer_middle",
+"90@468 l_temp_middle",
+"91@470 r_temp_middle",
+"92@474 cv_temple_inner_middle",
+"93@477 cv_temple_outer_middle",
+"94@479 AR1_middle_dT1",
+"95@481 AR1_middle_dT2",
+"96@483 AR2_middle_dT1",
+"97@485 AR2_middle_dT2",
+"98@493 RED_Red_255_Check_R",
+"99@500 RED_Red_255_Check_L",
+"100@507 Right_Projector_Red",
+"101@508 Left_Projector_Red",
+"102@516 GREEN_Green_255_Check_R",
+"103@523 GREEN_Green_255_Check_L",
+"104@530 Right_Projector_Green",
+"105@531 Left_Projector_Green",
+"106@539 BLUE_Blue_255_Check_R",
+"107@546 BLUE_Blue_255_Check_L",
+"108@553 Right_Projector_Blue",
+"109@554 Left_Projector_Blue",
+"110@566 grab_right_dimmer_init",
+"111@569 grab_left_dimmer_init",
+"112@578 grab_right_dimmer_on",
+"113@581 grab_left_dimmer_on",
+"114@586 grab_right_dimmer_off",
+"115@589 grab_left_dimmer_off",
+"116@600 dimmer_on_left",
+"117@601 dimmer_on_right",
+"118@603 dimmer_diff_left",
+"119@605 dimmer_diff_right",
+"120@638 AR1_PING_AR2",
+"121@648 IMU_L_READ",
+"122@653 IMU_R_READ",
+"123@655 Barometer_READ",
+"124@660 Magnetometer",
+"125@663 Hall sensor Left",
+"126@666 Hall sensor Right",
+"127@672 app_inner_tmp103b",
+"128@675 wifi_outer",
+"129@678 app_outer_tmp114a",
+"130@681 app_temple_inner",
+"131@687 cv_temple_outer",
+"132@890 cv_temple_inner",
+"133@695 Read Button Left Unpressed",
+"134@702 Read Button Left Pressed",
+"135@709 Read Button Right Unpressed",
+"136@716 Read Button Right Pressed",
+"137@736 RGB_TAKE_PIC_CHECK",
+"138@741 Mono_TAKE_PIC_CHECK",
+"139@750 IR_TAKE_PIC_CHECK",
+"140@754 camera_image_calculate",
+"141@756 limit_version",
+"142@758 limit_mode",
+"143@759 write_calibration",
+"144@761 mock_cams",
+"145@763 station/test/get_cbd/0/pass",
+"146@765 station/all_tests_run",
+"147@767 station/test/get_cbd/1/pass",
+"148@769 station/test/get_cbd/2/pass",
+"149@771 station/test/get_cbd/3/pass",
+"150@773 station/test/get_cbd/4/pass",
+"151@775 station/test/get_cbd/5/pass",
+"152@779 device/cbd_mean_mono",
+"153@783 device/cbd_max_mono",
+"154@787 device/blemish_mono",
+"155@789 station/test/get_cbd/0/cycle_time",
+"156@793 device/wb_hi_rg_rgb",
+"157@797 device/wb_hi_bg_rgb",
+"158@801 device/cbd_mean_rgb",
+"159@805 device/cbd_max_rgb",
+"160@809 device/blemish_rgb",
+"161@811 station/test/get_cbd/1/cycle_time",
+"162@815 device/cbd_mean_irbl",
+"163@819 device/cbd_max_irbl",
+"164@823 device/blemish_irbl",
+"165@825 station/test/get_cbd/2/cycle_time",
+"166@829 device/cbd_mean_irbr",
+"167@833 device/cbd_max_irbr",
+"168@837 device/blemish_irbr",
+"169@839 station/test/get_cbd/3/cycle_time",
+"170@843 device/cbd_mean_ircl",
+"171@847 device/cbd_max_ircl",
+"172@851 device/blemish_ircl",
+"173@853 station/test/get_cbd/4/cycle_time",
+"174@857 device/cbd_mean_ircr",
+"175@861 device/cbd_max_ircr",
+"176@865 device/blemish_ircr",
+"177@867 station/test/get_cbd/5/cycle_time",
+"178@872 power_ar1_end",
+"179@874 power_ar2_end",
+"180@878 app_temple_inner_end",
+"181@881 app_temple_outer_end",
+"182@884 l_temp_end",
+"183@886 r_temp_end",
+"184@890 cv_temple_inner_end",
+"185@893 cv_temple_outer_end",
+"186@895 AR1_end_dT1",
+"187@897 AR1_end_dT2",
+"188@999 AR2_end_dT1",
+"189@901 AR2_end_dT2"
+
+                ],
+                createdAt: "2025/12/16 12:00"
+ },
+            {
+                id: "20251117_V1_Proto B",
+                name: "20251117_V1_Proto B",
+                items: [
+                    "1@103 FW_Ver",
+"2@111 Battery Right Voltage",
+"3@113 Battery Right Temp",
+"4@116 Battery Left Voltage",
+"5@118 Battery Left Temp",
+"6@137 LED_0_On",
+"7@144 LED_0_Off",
+"8@151 LED_1_On",
+"9@158 LED_1_Off",
+"10@165 LED_2_On",
+"11@172 LED_2_Off",
+"12@179 LED_3_On",
+"13@186 LED_3_Off",
+"14@193 LED_4_On",
+"15@200 LED_4_Off",
+"16@207 LED_5_On",
+"17@214 LED_5_Off",
+"18@223 AR1_DEVICE_SN(root)",
+"19@224 AR2_DEVICE_SN(root)",
+"20@226 power_ar1_start",
+"21@228 power_ar2_start",
+"22@232 app_temple_inner_start",
+"23@235 app_temple_outer_start",
+"24@238 l_temp_start",
+"25@240 r_temp_start",
+"26@244 cv_temple_inner_start",
+"27@247 cv_temple_outer_start",
+"28@249 AR1_Start_dT1",
+"29@251 AR1_Start_dT2",
+"30@253 AR2_Start_dT1",
+"31@255 AR2_Start_dT2",
+"32@263 remount_check",
+"33@271 power_monitor_left_pogo",
+"34@273 power_monitor_ar2",
+"35@275 fuel_gauge_left",
+"36@277 charger_left",
+"37@279 tca9536",
+"38@281 tcal9538",
+"39@283 power_monitor_right_pogo",
+"40@285 power_monitor_ar1",
+"41@287 power_monitor_kauai",
+"42@289 fuel_gauge_right",
+"43@291 charger_right",
+"44@295 serial_number_rgb",
+"45@296 serial_number_mono",
+"46@297 serial_number_htr",
+"47@298 serial_number_htl",
+"48@299 serial_number_htcl",
+"49@300 serial_number_htcr",
+"50@308 GPS Present",
+"51@327 SPEAKER_RIGHT_FUN_Freq",
+"52@329 SPEAKER_RIGHT_FUN_AMP",
+"53@342 SPEAKER_LEFT_FUN_Freq",
+"54@344 SPEAKER_LEFT_FUN_AMP",
+"55@357 MIC1_FUN_Freq",
+"56@359 MIC1_FUN_AMP",
+"57@363 MIC2_FUN_Freq",
+"58@365 MIC2_FUN_AMP",
+"59@369 MIC3_FUN_Freq",
+"60@371 MIC3_FUN_AMP",
+"61@376 MIC4_FUN_Freq",
+"62@378 MIC4_FUN_AMP",
+"63@382 MIC5_FUN_Freq",
+"64@384 MIC5_FUN_AMP",
+"65@389 MIC6_FUN_Freq",
+"66@391 MIC6_FUN_AMP",
+"67@396 WIFI_MAC_READ",
+"68@402 BT_MAC_READ",
+"69@417 PROJECTOR_GET_STATUS",
+"70@422 BLACK_Red_0_Check_R",
+"71@424 BLACK_Green_0_Check_R",
+"72@426 BLACK_Blue_0_Check_R",
+"73@429 BLACK_Blue_0_Check_L",
+"74@431 BLACK_Red_0_Check_L",
+"75@433 BLACK_Green_0_Check_L",
+"76@434 Right_Projector_Black",
+"77@435 Left_Projector_Black",
+"78@440 WHITE_Red_255_Check_R",
+"79@442 WHITE_Green_255_Check_R",
+"80@444 WHITE_Blue_255_Check_R",
+"81@447 WHITE_Red_255_Check_L",
+"82@449 WHITE_Green_255_Check_L",
+"83@451 WHITE_Blue_255_Check_L",
+"84@453 Right_Projector_White",
+"85@454 Left_Projector_White",
+"86@456 power_ar1_middle",
+"87@458 power_ar2_middle",
+"88@462 app_temple_inner_middle",
+"89@465 app_temple_outer_middle",
+"90@468 l_temp_middle",
+"91@470 r_temp_middle",
+"92@474 cv_temple_inner_middle",
+"93@477 cv_temple_outer_middle",
+"94@479 AR1_middle_dT1",
+"95@481 AR1_middle_dT2",
+"96@483 AR2_middle_dT1",
+"97@485 AR2_middle_dT2",
+"98@493 RED_Red_255_Check_R",
+"99@500 RED_Red_255_Check_L",
+"100@507 Right_Projector_Red",
+"101@508 Left_Projector_Red",
+"102@516 GREEN_Green_255_Check_R",
+"103@523 GREEN_Green_255_Check_L",
+"104@530 Right_Projector_Green",
+"105@531 Left_Projector_Green",
+"106@539 BLUE_Blue_255_Check_R",
+"107@546 BLUE_Blue_255_Check_L",
+"108@553 Right_Projector_Blue",
+"109@554 Left_Projector_Blue",
+"110@566 grab_right_dimmer_init",
+"111@569 grab_left_dimmer_init",
+"112@575 grab_right_dimmer_on",
+"113@578 grab_left_dimmer_on",
+"114@582 grab_right_dimmer_off",
+"115@585 grab_left_dimmer_off",
+"116@596 dimmer_on_left",
+"117@597 dimmer_on_right",
+"118@599 dimmer_diff_left",
+"119@601 dimmer_diff_right",
+"120@634 AR1_PING_AR2",
+"121@644 IMU_L_READ",
+"122@649 IMU_R_READ",
+"123@651 Barometer_READ",
+"124@656 Magnetometer",
+"125@659 Hall sensor Left",
+"126@662 Hall sensor Right",
+"127@668 app_inner_tmp103b",
+"128@671 wifi_outer",
+"129@674 app_outer_tmp114a",
+"130@677 app_temple_inner",
+"131@683 cv_temple_outer",
+"132@686 cv_temple_inner",
+"133@691 Read Button Left Unpressed",
+"134@698 Read Button Left Pressed",
+"135@705 Read Button Right Unpressed",
+"136@712 Read Button Right Pressed",
+"137@732 RGB_TAKE_PIC_CHECK",
+"138@737 Mono_TAKE_PIC_CHECK",
+"139@746 IR_TAKE_PIC_CHECK",
+"140@750 camera_image_calculate",
+"141@752 limit_version",
+"142@754 limit_mode",
+"143@755 write_calibration",
+"144@757 mock_cams",
+"145@759 station/test/get_cbd/0/pass",
+"146@761 station/all_tests_run",
+"147@763 station/test/get_cbd/1/pass",
+"148@765 station/test/get_cbd/2/pass",
+"149@767 station/test/get_cbd/3/pass",
+"150@769 station/test/get_cbd/4/pass",
+"151@771 station/test/get_cbd/5/pass",
+"152@775 device/cbd_mean_mono",
+"153@779 device/cbd_max_mono",
+"154@783 device/blemish_mono",
+"155@785 station/test/get_cbd/0/cycle_time",
+"156@789 device/wb_hi_rg_rgb",
+"157@793 device/wb_hi_bg_rgb",
+"158@797 device/cbd_mean_rgb",
+"159@801 device/cbd_max_rgb",
+"160@805 device/blemish_rgb",
+"161@807 station/test/get_cbd/1/cycle_time",
+"162@811 device/cbd_mean_irbl",
+"163@815 device/cbd_max_irbl",
+"164@819 device/blemish_irbl",
+"165@821 station/test/get_cbd/2/cycle_time",
+"166@825 device/cbd_mean_irbr",
+"167@829 device/cbd_max_irbr",
+"168@833 device/blemish_irbr",
+"169@835 station/test/get_cbd/3/cycle_time",
+"170@839 device/cbd_mean_ircl",
+"171@843 device/cbd_max_ircl",
+"172@847 device/blemish_ircl",
+"173@849 station/test/get_cbd/4/cycle_time",
+"174@853 device/cbd_mean_ircr",
+"175@857 device/cbd_max_ircr",
+"176@861 device/blemish_ircr",
+"177@863 station/test/get_cbd/5/cycle_time",
+"178@868 power_ar1_end",
+"179@870 power_ar2_end",
+"180@874 app_temple_inner_end",
+"181@877 app_temple_outer_end",
+"182@880 l_temp_end",
+"183@882 r_temp_end",
+"184@886 cv_temple_inner_end",
+"185@889 cv_temple_outer_end",
+"186@891 AR1_end_dT1",
+"187@893 AR1_end_dT2",
+"188@895 AR2_end_dT1",
+"189@897 AR2_end_dT2"
+
+                ],
+                createdAt: "2025/11/17 12:00"
+ },
+            {
+                id: "20251112_V2_Proto B",
+                name: "20251112_V2_Proto B",
+                items: [
+                    "1@3 OE",
+"2@4 TEMPLE/L",
+"3@5 TEMPLE/R",
+"4@6 BRIDGE FLEX",
+"5@7 HIGHWAY FLEX",
+"6@8 IR CAM/B R",
+"7@9 IR CAM/B L",
+"8@10 CAMERA R",
+"9@11 CAMERA L",
+"10@12 FRONT COVER",
+"11@13 OE MID-CHASSIS",
+"12@14 SOC R",
+"13@15 VAPOR CHAMBER R",
+"14@16 WIFI/B",
+"15@17 CHARGE FLEX R",
+"16@18 BATTERY R",
+"17@19 SPEAKER R",
+"18@20 SOC L",
+"19@21 VAPOR CHAMBER L",
+"20@22 CHARGE FLEX L",
+"21@23 GPS RIGID FLEX L",
+"22@24 BATTERY L",
+"23@25 SPEAKER L",
+"24@26 BUTTON/B R",
+"25@27 BUTTON/B L",
+"26@28 DIMMABLE GLASS/L",
+"27@29 DIMMABLE GLASS/R",
+"28@30 CAMERA MODULE R",
+"29@31 IMU/B R",
+"30@32 CAMERA MODULE L",
+"31@33 IMU/B L",
+"32@42 BT_Mac_SF",
+"33@51 WIFI_Mac_SF",
+"34@56 REAR COVER",
+"35@57 MIC RIGHT FPC",
+"36@58 MIC LEFT FPC",
+"37@103 FW_Ver",
+"38@111 Battery Right Voltage",
+"39@113 Battery Right Temp",
+"40@116 Battery Left Voltage",
+"41@118 Battery Left Temp",
+"42@137 LED_0_On",
+"43@144 LED_0_Off",
+"44@151 LED_1_On",
+"45@158 LED_1_Off",
+"46@165 LED_2_On",
+"47@172 LED_2_Off",
+"48@179 LED_3_On",
+"49@186 LED_3_Off",
+"50@193 LED_4_On",
+"51@200 LED_4_Off",
+"52@207 LED_5_On",
+"53@214 LED_5_Off",
+"54@223 AR1_DEVICE_SN(root)",
+"55@224 AR2_DEVICE_SN(root)",
+"56@226 power_ar1_start",
+"57@228 power_ar2_start",
+"58@232 app_temple_inner_start",
+"59@235 app_temple_outer_start",
+"60@238 l_temp_start",
+"61@240 r_temp_start",
+"62@244 cv_temple_inner_start",
+"63@247 cv_temple_outer_start",
+"64@249 AR1_Start_dT1",
+"65@251 AR1_Start_dT2",
+"66@253 AR2_Start_dT1",
+"67@255 AR2_Start_dT2",
+"68@263 remount_check",
+"69@271 power_monitor_left_pogo",
+"70@273 power_monitor_ar2",
+"71@275 fuel_gauge_left",
+"72@277 charger_left",
+"73@279 tca9536",
+"74@281 tcal9538",
+"75@283 power_monitor_right_pogo",
+"76@285 power_monitor_ar1",
+"77@287 power_monitor_kauai",
+"78@289 fuel_gauge_right",
+"79@291 charger_right",
+"80@295 serial_number_rgb",
+"81@296 serial_number_mono",
+"82@297 serial_number_htr",
+"83@298 serial_number_htl",
+"84@299 serial_number_htcl",
+"85@300 serial_number_htcr",
+"86@308 GPS Present",
+"87@327 SPEAKER_RIGHT_FUN_Freq",
+"88@329 SPEAKER_RIGHT_FUN_AMP",
+"89@342 SPEAKER_LEFT_FUN_Freq",
+"90@344 SPEAKER_LEFT_FUN_AMP",
+"91@357 MIC1_FUN_Freq",
+"92@359 MIC1_FUN_AMP",
+"93@363 MIC2_FUN_Freq",
+"94@365 MIC2_FUN_AMP",
+"95@369 MIC3_FUN_Freq",
+"96@371 MIC3_FUN_AMP",
+"97@376 MIC4_FUN_Freq",
+"98@378 MIC4_FUN_AMP",
+"99@382 MIC5_FUN_Freq",
+"100@384 MIC5_FUN_AMP",
+"101@389 MIC6_FUN_Freq",
+"102@391 MIC6_FUN_AMP",
+"103@396 WIFI_MAC_READ",
+"104@397 WIFI_MAC_COMPARE",
+"105@402 BT_MAC_READ",
+"106@403 BT_MAC_COMPARE",
+"107@417 PROJECTOR_GET_STATUS",
+"108@422 BLACK_Red_0_Check_R",
+"109@424 BLACK_Green_0_Check_R",
+"110@426 BLACK_Blue_0_Check_R",
+"111@429 BLACK_Red_0_Check_L",
+"112@431 BLACK_Green_0_Check_L",
+"113@433 BLACK_Blue_0_Check_L",
+"114@434 Right_Projector_Black",
+"115@435 Left_Projector_Black",
+"116@440 WHITE_Red_255_Check_R",
+"117@442 WHITE_Green_255_Check_R",
+"118@444 WHITE_Blue_255_Check_R",
+"119@447 WHITE_Red_255_Check_L",
+"120@449 WHITE_Green_255_Check_L",
+"121@451 WHITE_Blue_255_Check_L",
+"122@453 Right_Projector_White",
+"123@454 Left_Projector_White",
+"124@456 power_ar1_middle",
+"125@458 power_ar2_middle",
+"126@462 app_temple_inner_middle",
+"127@465 app_temple_outer_middle",
+"128@468 l_temp_middle",
+"129@470 r_temp_middle",
+"130@474 cv_temple_inner_middle",
+"131@477 cv_temple_outer_middle",
+"132@479 AR1_middle_dT1",
+"133@481 AR1_middle_dT2",
+"134@483 AR2_middle_dT1",
+"135@485 AR2_middle_dT2",
+"136@493 RED_Red_255_Check_R",
+"137@500 RED_Red_255_Check_L",
+"138@507 Right_Projector_Red",
+"139@508 Left_Projector_Red",
+"140@516 GREEN_Green_255_Check_R",
+"141@523 GREEN_Green_255_Check_L",
+"142@530 Right_Projector_Green",
+"143@531 Left_Projector_Green",
+"144@539 BLUE_Blue_255_Check_R",
+"145@546 BLUE_Blue_255_Check_L",
+"146@553 Right_Projector_Blue",
+"147@554 Left_Projector_Blue",
+"148@566 grab_right_dimmer_init",
+"149@569 grab_left_dimmer_init",
+"150@575 grab_right_dimmer_on",
+"151@578 grab_left_dimmer_on",
+"152@582 grab_right_dimmer_off",
+"153@585 grab_left_dimmer_off",
+"154@596 dimmer_on_left",
+"155@597 dimmer_on_right",
+"156@599 dimmer_diff_left",
+"157@601 dimmer_diff_right",
+"158@634 AR1_PING_AR2",
+"159@644 IMU_L_READ",
+"160@649 IMU_R_READ",
+"161@651 Barometer_READ",
+"162@656 Magnetometer",
+"163@659 Hall sensor Left",
+"164@662 Hall sensor Right",
+"165@668 app_inner_tmp103b",
+"166@671 wifi_outer",
+"167@674 app_outer_tmp114a",
+"168@677 app_temple_inner",
+"169@683 cv_temple_outer",
+"170@686 cv_temple_inner",
+"171@732 RGB_TAKE_PIC_CHECK",
+"172@737 Mono_TAKE_PIC_CHECK",
+"173@746 IR_TAKE_PIC_CHECK",
+"174@750 camera_image_calculate",
+"175@752 limit_version",
+"176@754 limit_mode",
+"177@755 write_calibration",
+"178@757 mock_cams",
+"179@759 station/test/get_cbd/0/pass",
+"180@761 station/all_tests_run",
+"181@763 station/test/get_cbd/1/pass",
+"182@765 station/test/get_cbd/2/pass",
+"183@767 station/test/get_cbd/3/pass",
+"184@769 station/test/get_cbd/4/pass",
+"185@771 station/test/get_cbd/5/pass",
+"186@775 device/cbd_mean_mono",
+"187@779 device/cbd_max_mono",
+"188@783 device/blemish_mono",
+"189@785 station/test/get_cbd/0/cycle_time",
+"190@789 device/wb_hi_rg_rgb",
+"191@793 device/wb_hi_bg_rgb",
+"192@797 device/cbd_mean_rgb",
+"193@801 device/cbd_max_rgb",
+"194@805 device/blemish_rgb",
+"195@807 station/test/get_cbd/1/cycle_time",
+"196@811 device/cbd_mean_irbl",
+"197@815 device/cbd_max_irbl",
+"198@819 device/blemish_irbl",
+"199@821 station/test/get_cbd/2/cycle_time",
+"200@825 device/cbd_mean_irbr",
+"201@829 device/cbd_max_irbr",
+"202@833 device/blemish_irbr",
+"203@835 station/test/get_cbd/3/cycle_time",
+"204@839 device/cbd_mean_ircl",
+"205@843 device/cbd_max_ircl",
+"206@847 device/blemish_ircl",
+"207@849 station/test/get_cbd/4/cycle_time",
+"208@853 device/cbd_mean_ircr",
+"209@857 device/cbd_max_ircr",
+"210@861 device/blemish_ircr",
+"211@863 station/test/get_cbd/5/cycle_time",
+"212@868 power_ar1_end",
+"213@870 power_ar2_end",
+"214@874 app_temple_inner_end",
+"215@877 app_temple_outer_end",
+"216@880 l_temp_end",
+"217@882 r_temp_end",
+"218@886 cv_temple_inner_end",
+"219@889 cv_temple_outer_end",
+"220@891 AR1_end_dT1",
+"221@893 AR1_end_dT2",
+"222@895 AR2_end_dT1",
+"223@897 AR2_end_dT2"
+
+                ],
+                createdAt: "2025/11/12 12:00"
+ },
+
+        ];
+
+
+        function App() {
+            // ── 版本管理狀態 ──────────────────────────────────────────────────
+            const [versions, setVersions] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('rel_report_versions');
+                    const savedParsed = saved ? JSON.parse(saved) : [];
+                    
+                    if (savedParsed.length === 0) {
+                        return DEFAULT_VERSIONS;
+                    }
+                    
+                    const merged = [...savedParsed];
+                    DEFAULT_VERSIONS.forEach(defaultVer => {
+                        if (!merged.some(v => v.id === defaultVer.id)) {
+                            merged.push(defaultVer);
+                        }
+                    });
+                    return merged;
+                } catch(err) { 
+                    return DEFAULT_VERSIONS; 
+                }
+            });
+
+            const [activeVersionId, setActiveVersionId] = useState(() => {
+                try {
+                    const savedActive = localStorage.getItem('rel_report_active_version_id');
+                    if (savedActive) return savedActive;
+                    return DEFAULT_VERSIONS.length > 0 ? DEFAULT_VERSIONS[0].id : null;
+                } catch(err) { 
+                    return DEFAULT_VERSIONS.length > 0 ? DEFAULT_VERSIONS[0].id : null; 
+                }
+            });
+
+            const [showNewVersionInput, setShowNewVersionInput] = useState(false);
+            const [newVersionName, setNewVersionName] = useState('');
+            const [importTargetId, setImportTargetId] = useState(null);
+
+            // ── 切換版本 Alarm 提示訊息 ───────────────────────────────────────
+            const [alarmMessage, setAlarmMessage] = useState(null);
+
+            // ── 查詢、新增、歷史紀錄與隱藏狀態 ──────────────────────────────────────
+            const [inputValue, setInputValue] = useState('');
+            const [results, setResults] = useState([]);
+            const [newNum1, setNewNum1] = useState('');
+            const [newNum2, setNewNum2] = useState('');
+            const [newDesc, setNewDesc] = useState('');
+            const [selectedIndices, setSelectedIndices] = useState(new Set());
+            const [isManageVisible, setIsManageVisible] = useState(true); 
+            
+            // 💡 查詢歷史紀錄狀態
+            const [queryHistory, setQueryHistory] = useState(() => {
+                try {
+                    const saved = localStorage.getItem('rel_report_query_history');
+                    return saved ? JSON.parse(saved) : [];
+                } catch(err) { return []; }
+            });
+
+            // ── 引用宣告 ──────────────────────────────────────────────────────
+            const fileInputRef = useRef(null);       
+            const versionFileRef = useRef(null);     
+            const folderInputRef = useRef(null); 
+            const historyContainerRef = useRef(null);
+
+            // ── 衍生資料計算 ──────────────────────────────────────────────────
+            const activeVersion = versions.find(v => v.id === activeVersionId) || null;
+            const dataList = activeVersion ? activeVersion.items : [];
+
+            // ── 資料同步與副作用 ───────────────────────────────────────────────
+            useEffect(() => {
+                localStorage.setItem('rel_report_versions', JSON.stringify(versions));
+            }, [versions]);
+
+            useEffect(() => {
+                if (activeVersionId) localStorage.setItem('rel_report_active_version_id', activeVersionId);
+                else localStorage.removeItem('rel_report_active_version_id');
+            }, [activeVersionId]);
+
+            useEffect(() => {
+                localStorage.setItem('rel_report_query_history', JSON.stringify(queryHistory));
+            }, [queryHistory]);
+
+            useEffect(() => {
+                if (historyContainerRef.current) {
+                    historyContainerRef.current.scrollTop = historyContainerRef.current.scrollHeight;
+                }
+            }, [queryHistory]);
+
+            useEffect(() => {
+                if (alarmMessage) {
+                    const timer = setTimeout(() => setAlarmMessage(null), 2000);
+                    return () => clearTimeout(timer);
+                }
+            }, [alarmMessage]);
+
+            useEffect(() => {
+                try {
+                    if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                        window.lucide.createIcons();
+                    }
+                } catch (err) { console.log("Waiting for Lucide icons..."); }
+            }, [versions, activeVersionId, showNewVersionInput, dataList, results, selectedIndices, queryHistory, isManageVisible, alarmMessage]);
+
+            // ── 輔補函式：更新特定版本 ──────────────────────────────────────────
+            const updateVersionItems = (versionId, updater) => {
+                setVersions(prev => prev.map(v => {
+                    if (v.id !== versionId) return v;
+                    const items = typeof updater === 'function' ? updater(v.items) : updater;
+                    return { ...v, items };
+                }));
+            };
+
+            // ── 版本管理操作邏輯 ───────────────────────────────────────────────
+            const handleCreateVersion = () => {
+                const name = newVersionName.trim();
+                if (!name) return;
+                const id = Date.now().toString();
+                const created = {
+                    id, name, items: [],
+                    createdAt: new Date().toLocaleString('zh-TW', {
+                        year: 'numeric', month: '2-digit', day: '2-digit',
+                        hour: '2-digit', minute: '2-digit'
+                    })
+                };
+                setVersions(prev => [created, ...prev]);
+                setAlarmMessage(`已成功建立並切換至新版本：「${name}」`);
+                setActiveVersionId(id);
+                setNewVersionName('');
+                setShowNewVersionInput(false);
+                setSelectedIndices(new Set());
+                setResults([]);
+            };
+
+            const handleFolderSelect = async (evt) => {
+                const files = Array.from(evt.target.files || []);
+                const excelFiles = files.filter(file => {
+                    const name = file.name;
+                    const isExcel = name.endsWith('.xlsx') || name.endsWith('.xls') || name.endsWith('.csv');
+                    const isTemp = name.startsWith('~$');
+                    const depth = (file.webkitRelativePath.match(/\//g) || []).length;
+                    return isExcel && !isTemp && depth <= 1;
+                });
+
+                if (excelFiles.length === 0) {
+                    alert('在此目錄層中未找到有效的 Excel 或 CSV 檔案。');
+                    return;
+                }
+
+                let newVersionsAdded = [];
+                let latestId = null;
+                let latestName = '';
+
+                for (let file of excelFiles) {
+                    const versionName = file.name.replace(/\.[^/.]+$/, "");
+                    if (versions.some(v => v.name === versionName)) continue;
+
+                    const fileItems = await new Promise((resolve) => {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            try {
+                                const { imported } = parseXlsx(e.target.result, []);
+                                resolve(imported);
+                            } catch (err) { resolve([]); }
+                        };
+                        reader.readAsArrayBuffer(file);
+                    });
+
+                    latestId = (Date.now() + Math.random()).toString();
+                    latestName = versionName;
+                    newVersionsAdded.push({
+                        id: latestId, name: versionName, items: fileItems,
+                        createdAt: new Date().toLocaleString('zh-TW', {
+                            year: 'numeric', month: '2-digit', day: '2-digit',
+                            hour: '2-digit', minute: '2-digit'
+                        })
+                    });
+                }
+
+                if (newVersionsAdded.length > 0) {
+                    setVersions(prev => [...newVersionsAdded, ...prev]);
+                    if (latestId) {
+                        setAlarmMessage(`已掃描目錄並載入最新版本：「${latestName}」`);
+                        setActiveVersionId(latestId);
+                        setSelectedIndices(new Set());
+                        setResults([]);
+                    }
+                } else {
+                    alert('目錄下的檔案名稱皆已存在於版本管理中，未新增任何版本。');
+                }
+                evt.target.value = '';
+            };
+
+            const handleLoadVersion = (id, targetName) => {
+                if (id === activeVersionId) return;
+                setAlarmMessage(`版本已成功切換至：「${targetName}」`);
+                setActiveVersionId(id);
+                setSelectedIndices(new Set());
+                setResults([]);
+                setInputValue('');
+            };
+
+            const handleDeleteVersion = (id) => {
+                if (!confirm('確定要刪除此版本？')) return;
+                setVersions(prev => prev.filter(v => v.id !== id));
+                if (activeVersionId === id) {
+                    setActiveVersionId(null);
+                    setResults([]);
+                    setAlarmMessage("已卸載當前版本");
+                }
+            };
+
+            // ── 查詢功能 ──────────────────────────────────────────────────────
+            const handleSearch = () => {
+                if (!inputValue.trim()) { setResults([]); return; }
+                const ids = inputValue.split(/[,，]/).map(s => s.trim()).filter(Boolean);
+                const matched = dataList.filter(item => ids.includes(item.split('@')[0]));
+                setResults(matched);
+            };
+
+            const handleKeyDown = (e) => {
+                if (e.key === 'Enter') handleSearch();
+            };
+
+            // ── 新增與刪除 ────────────────────────────────────────────────────
+            const handleAddRecord = () => {
+                if (!newNum1.trim() || !newNum2.trim() || !newDesc.trim()) {
+                    alert('請填寫所有欄位'); return;
+                }
+                if (!activeVersionId) { alert('請先選擇或建立一個版本'); return; }
+                if (dataList.some(item => item.split('@')[0] === newNum1.trim())) {
+                    alert('編號1已存在，請使用不同的編號'); return;
+                }
+                const record = `${newNum1.trim()}@${newNum2.trim()} ${newDesc.trim()}`;
+                updateVersionItems(activeVersionId, prev => [...prev, record]);
+                setNewNum1(''); setNewNum2(''); setNewDesc('');
+            };
+
+            const toggleSelectRecord = (index) => {
+                const next = new Set(selectedIndices);
+                next.has(index) ? next.delete(index) : next.add(index);
+                setSelectedIndices(next);
+            };
+
+            const toggleSelectAll = () => {
+                if (selectedIndices.size === dataList.length && dataList.length > 0) {
+                    setSelectedIndices(new Set());
+                } else {
+                    setSelectedIndices(new Set(dataList.map((_, i) => i)));
+                }
+            };
+
+            const handleDeleteSelected = () => {
+                if (selectedIndices.size === 0) { alert('請先選擇要刪除的測試項目'); return; }
+                if (!confirm(`確定要刪除選中的 ${selectedIndices.size} 筆測試項目嗎？`)) return;
+                updateVersionItems(activeVersionId, prev => prev.filter((_, i) => !selectedIndices.has(i)));
+                setSelectedIndices(new Set());
+            };
+
+            const handleDeleteRecord = (index) => {
+                if (!confirm('確定要刪除這筆測試項目嗎？')) return;
+                updateVersionItems(activeVersionId, prev => prev.filter((_, i) => i !== index));
+                const nextSelected = new Set(selectedIndices);
+                nextSelected.delete(index);
+                setSelectedIndices(nextSelected);
+            };
+
+            // ── 檔案解析器 ────────────────────────────────────────────────────
+            const parseXlsx = (data, existingItems) => {
+                const workbook = XLSX.read(data, { type: 'array' });
+                const sheet = workbook.Sheets[workbook.SheetNames[0]];
+                const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                const existingIds = new Set(existingItems.map(item => item.split('@')[0]));
+                const imported = [];
+                let duplicates = 0;
+
+                const start = (rows[0]?.[0] === '編號1' || String(rows[0]?.[0]).startsWith('編號')) ? 1 : 0;
+
+                for (let i = start; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (!row || row.length === 0) continue;
+                    let record = '';
+
+                    if (row.length === 1 && typeof row[0] === 'string' && row[0].includes('@')) {
+                        record = row[0].trim();
+                    } else if (row.length >= 2) {
+                        const col0 = String(row[0] || '').trim();
+                        const col1 = String(row[1] || '').trim();
+                        if (row.length >= 3 && row[2] !== undefined && String(row[2]).trim() !== '') {
+                            const col2 = String(row[2]).trim();
+                            if (col0 && col1 && col2) record = `${col0}@${col1} ${col2}`;
+                        } else if (col0.includes('@') && col1) {
+                            record = `${col0} ${col1}`;
+                        }
+                    }
+
+                    if (!record) continue;
+                    const id = record.split('@')[0];
+                    if (!existingIds.has(id)) {
+                        imported.push(record);
+                        existingIds.add(id);
+                    } else { duplicates++; }
+                }
+                return { imported, duplicates };
+            };
+
+            // ── 檔案匯入處理 ──────────────────────────────────────────────────
+            const handleFileUpload = (evt) => {
+                const file = evt.target.files?.[0];
+                if (!file || !activeVersionId) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const { imported, duplicates } = parseXlsx(e.target.result, dataList);
+                        if (imported.length > 0) {
+                            updateVersionItems(activeVersionId, prev => [...prev, ...imported]);
+                            let msg = `成功匯入 ${imported.length} 筆測試項目`;
+                            if (duplicates > 0) msg += `\n跳過 ${duplicates} 筆重複測試項目`;
+                            alert(msg);
+                        } else { alert('未找到有效的測試項目'); }
+                    } catch (err) { alert('檔案解析失敗，請確認格式正確'); }
+                };
+                reader.readAsArrayBuffer(file);
+                evt.target.value = '';
+            };
+
+            const handleVersionFileUpload = (evt) => {
+                const file = evt.target.files?.[0];
+                if (!file || !importTargetId) return;
+                const targetVersion = versions.find(v => v.id === importTargetId);
+                if (!targetVersion) return;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const { imported, duplicates } = parseXlsx(e.target.result, targetVersion.items);
+                        if (imported.length > 0) {
+                            updateVersionItems(importTargetId, prev => [...prev, ...imported]);
+                            setAlarmMessage(`已匯入並切換至版本：「${targetVersion.name}」`);
+                            setActiveVersionId(importTargetId);
+                            setSelectedIndices(new Set());
+                        } else { alert('未找到有效的測試項目'); }
+                    } catch (err) { alert('檔案解析失敗，請確認格式正確'); }
+                };
+                reader.readAsArrayBuffer(file);
+                setImportTargetId(null);
+                evt.target.value = '';
+            };
+
+            const triggerVersionImport = (versionId) => {
+                setImportTargetId(versionId);
+                setTimeout(() => versionFileRef.current?.click(), 0);
+            };
+
+            // ── 複製與歷史記錄（💡 新增寫入版本資訊） ────────────────────────────
+            const handleCopyResults = () => {
+                if (results.length === 0) { alert('沒有可複製的查詢結果'); return; }
+                const resultText = results.join(', ');
+
+                const timeString = new Date().toLocaleString('zh-TW', { 
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true 
+                });
+
+                navigator.clipboard.writeText(resultText)
+                    .then(() => {
+                        alert('已複製到剪貼簿！\n\n' + resultText);
+                        
+                        // 💡 在歷史紀錄物件中額外加入 versionName
+                        setQueryHistory(prev => [...prev, {
+                            id: Date.now(),
+                            versionName: activeVersion ? activeVersion.name : '未選擇版本',
+                            queryText: inputValue.trim(),
+                            resultText: resultText,
+                            timestamp: timeString
+                        }].slice(-50));
+                    })
+                    .catch(() => alert('複製失敗，請手動複製。'));
+            };
+
+            // 💡 新增功能：單筆刪除歷史紀錄
+            const handleDeleteHistoryItem = (id) => {
+                setQueryHistory(prev => prev.filter(h => h.id !== id));
+            };
+
+            const handleExportHistory = () => {
+                if (queryHistory.length === 0) { alert('沒有查詢歷史可以匯出'); return; }
+                const exportData = queryHistory.map((h, i) => ({
+                    '序號': i + 1, '時間': h.timestamp, '查詢版本': h.versionName || '無', '輸入條件': h.queryText, '查詢結果': h.resultText
+                }));
+                const ws = XLSX.utils.json_to_sheet(exportData);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, '查詢歷史');
+                XLSX.writeFile(wb, `查詢歷史_${new Date().toISOString().slice(0, 10)}.csv`, { bookType: 'csv' });
+            };
+
+            // ── UI 渲染 ──────────────────────────────────────────────────────
+            return e('div', { className: 'min-h-screen flex relative' },
+                e('input', { ref: fileInputRef, type: 'file', accept: '.xlsx,.xls,.csv', onChange: handleFileUpload, className: 'hidden' }),
+                e('input', { ref: versionFileRef, type: 'file', accept: '.xlsx,.xls,.csv', onChange: handleVersionFileUpload, className: 'hidden' }),
+                e('input', { ref: folderInputRef, type: 'file', webkitdirectory: '', directory: '', onChange: handleFolderSelect, className: 'hidden' }),
+
+                // Alarm 浮動通知元件
+                alarmMessage && e('div', { className: 'fixed top-4 right-4 z-50 transform transition-all duration-300 ease-out bg-slate-900 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700 animate-bounce' },
+                    e('i', { 'data-lucide': 'bell', className: 'w-5 h-5 text-amber-400 shrink-0' }),
+                    e('span', { className: 'text-sm font-medium' }, alarmMessage)
+                ),
+
+                // ── 左側：版本管理 Sidebar ──
+                e('aside', { className: 'w-64 shrink-0 bg-white border-r border-gray-200 shadow-md flex flex-col' },
+                    e('div', { className: 'bg-gradient-to-b from-slate-700 to-slate-800 px-4 py-5' },
+                        e('h2', { className: 'text-white font-bold text-base flex items-center gap-2' }, e('i', { 'data-lucide': 'folder-open', className: 'w-5 h-5' }), '版本管理'),
+                        e('p', { className: 'text-slate-400 text-xs mt-0.5' }, '測試項目版本清單管理')
+                    ),
+                    e('div', { className: 'flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar' },
+                        versions.length === 0 ? e('p', { className: 'text-gray-400 text-xs text-center py-6 leading-relaxed' }, '尚無版本\n請點擊下方\n按鈕建立') :
+                        versions.map(v => {
+                            const isActive = v.id === activeVersionId;
+                            return e('div', { key: v.id, className: `rounded-lg border transition-all ${isActive ? 'bg-blue-50 border-blue-300 shadow-sm' : 'bg-gray-50 border-gray-200 hover:bg-gray-100'}` },
+                                e('button', { onClick: () => handleLoadVersion(v.id, v.name), className: 'w-full text-left px-3 py-2 flex items-start gap-2' },
+                                    e('i', { 'data-lucide': isActive ? 'folder-open' : 'folder', className: `w-4 h-4 mt-0.5 shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400'}` }),
+                                    e('div', { className: 'flex-1 min-w-0' },
+                                        e('p', { className: `text-sm font-semibold truncate ${isActive ? 'text-blue-700' : 'text-gray-700'}` }, v.name),
+                                        e('p', { className: 'text-xs text-gray-400' }, `${v.items.length} 筆項目`)
+                                    )
+                                ),
+                                e('div', { className: 'flex border-t border-gray-200 divide-x divide-gray-200' },
+                                    e('button', { onClick: () => triggerVersionImport(v.id), className: 'flex-1 py-1.5 flex items-center justify-center gap-1 text-xs text-emerald-600 hover:bg-emerald-50 transition-colors rounded-bl-lg font-medium' }, e('i', { 'data-lucide': 'upload', className: 'w-3 h-3' }), '匯入'),
+                                    e('button', { onClick: () => handleDeleteVersion(v.id), className: 'flex-1 py-1.5 flex items-center justify-center gap-1 text-xs text-red-500 hover:bg-red-50 transition-colors rounded-br-lg font-medium' }, e('i', { 'data-lucide': 'trash-2', className: 'w-3 h-3' }), '刪除')
+                                )
+                            );
+                        })
+                    ),
+                    e('div', { className: 'p-3 border-t border-gray-200 bg-gray-50 space-y-2' },
+                        showNewVersionInput ? e('div', { className: 'space-y-2' },
+                            e('input', {
+                                autoFocus: true, type: 'text', value: newVersionName,
+                                onChange: e => setNewVersionName(e.target.value),
+                                onKeyDown: e => { if (e.key === 'Enter') handleCreateVersion(); if (e.key === 'Escape') { setShowNewVersionInput(false); setNewVersionName(''); } },
+                                placeholder: '版本名稱…', className: 'w-full px-2.5 py-1.5 text-sm border-2 border-blue-400 rounded-lg focus:outline-none'
+                            }),
+                            e('div', { className: 'flex gap-1.5' },
+                                e('button', { onClick: handleCreateVersion, className: 'flex-1 py-1.5 bg-blue-600 text-white text-xs rounded-lg font-semibold hover:bg-blue-700' }, '建立'),
+                                e('button', { onClick: () => { setShowNewVersionInput(false); setNewVersionName(''); }, className: 'px-2.5 py-1.5 bg-gray-200 text-gray-600 text-xs rounded-lg' }, e('i', { 'data-lucide': 'x', className: 'w-3 h-3' }))
+                            )
+                        ) : e('button', { onClick: () => setShowNewVersionInput(true), className: 'w-full py-2 flex items-center justify-center gap-1.5 text-xs font-semibold text-blue-600 bg-blue-50 border border-blue-300 rounded-lg hover:bg-blue-100' }, e('i', { 'data-lucide': 'plus', className: 'w-4 h-4' }), '手動新增版本'),
+                        
+                        e('button', { 
+                            onClick: () => folderInputRef.current?.click(), 
+                            className: 'w-full py-2 flex items-center justify-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-300 rounded-lg hover:bg-emerald-100 transition-colors' 
+                        }, e('i', { 'data-lucide': 'scan', className: 'w-4 h-4' }), '掃描目錄 Excel 建立版本')
+                    )
+                ),
+
+                // ── 右側：主要工作區域 ──
+                e('main', { className: 'flex-1 overflow-auto p-6' },
+                    e('div', { className: 'max-w-4xl mx-auto space-y-6' },
+                        activeVersion ? e('div', { className: 'bg-blue-600 text-white rounded-xl px-5 py-3 flex items-center gap-3 shadow' },
+                            e('i', { 'data-lucide': 'folder-open', className: 'w-5 h-5' }),
+                            e('span', { className: 'font-semibold' }, `目前版本：${activeVersion.name}`),
+                            e('span', { className: 'text-blue-200 text-sm' }, `（${dataList.length} 筆測試項目）`)
+                        ) : null,
+
+                        e('div', { className: 'flex flex-col gap-6' },
+                            
+                            // 【順序 1】 ── 測試項目查詢 ──
+                            e('div', { className: 'bg-white rounded-2xl shadow-xl overflow-hidden' },
+                                e('div', { className: 'bg-gradient-to-r from-blue-600 to-indigo-600 p-5' },
+                                    e('h1', { className: 'text-white text-xl font-bold text-center' }, '測試項目查詢'),
+                                    e('p', { className: 'text-blue-100 text-center text-sm mt-1' }, '輸入編號1查詢完整測試項目')
+                                ),
+                                e('div', { className: 'p-5' },
+                                    !activeVersion ? e('div', { className: 'mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-700 font-medium' }, '請先在左側選單選擇或新增一個版本') : null,
+                                    e('div', { className: 'mb-5' },
+                                        e('label', { className: 'block text-gray-700 font-semibold mb-2 text-sm' }, '輸入編號1：'),
+                                        e('div', { className: 'flex gap-2' },
+                                            e('input', {
+                                                type: 'text', value: inputValue, onChange: e => setInputValue(e.target.value), onKeyDown: handleKeyDown,
+                                                placeholder: '例如: 101,103,105', disabled: !activeVersion,
+                                                className: 'flex-1 px-3 py-2.5 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 disabled:bg-gray-100'
+                                            }),
+                                            e('button', { onClick: handleSearch, disabled: !activeVersion, className: 'px-4 py-2.5 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 flex items-center gap-2 disabled:bg-gray-400' }, e('i', { 'data-lucide': 'search', className: 'w-4 h-4' }), '查詢')
+                                        )
+                                    ),
+                                    e('div', null,
+                                        e('div', { className: 'flex items-center justify-between mb-2' },
+                                            e('label', { className: 'block text-gray-700 font-semibold text-sm' }, '查詢結果：'),
+                                            results.length > 0 ? e('button', { onClick: handleCopyResults, className: 'px-3 py-1 text-xs bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 flex items-center gap-1' }, e('i', { 'data-lucide': 'copy', className: 'w-3 h-3' }), '複製結果') : null
+                                        ),
+                                        e('div', { className: 'min-h-[150px] border-2 border-gray-200 rounded-lg p-4 bg-gray-50' },
+                                            (results.length === 0 && inputValue.trim() !== '') ? e('p', { className: 'text-center text-gray-500 py-6 text-sm' }, '未找到匹配的記錄') : null,
+                                            (results.length === 0 && inputValue.trim() === '') ? e('p', { className: 'text-center text-gray-400 py-6 text-sm' }, '請在上方輸入編號1進行查詢') : null,
+                                            results.length > 0 ? e('div', { className: 'space-y-2' },
+                                                results.map((r, i) => e('div', { key: i, className: 'bg-white p-3 rounded-lg shadow-sm border-l-4 border-blue-500' }, e('div', { className: 'font-mono text-sm text-gray-800' }, r)))
+                                            ) : null
+                                        )
+                                    )
+                                )
+                            ),
+
+                            // 【順序 2】 ── 💡 查詢歷史紀錄區塊（加入版本資訊、支援單筆刪除） ──
+                            queryHistory.length > 0 ? e('div', { className: 'bg-white rounded-2xl shadow-xl overflow-hidden' },
+                                e('div', { className: 'bg-gradient-to-r from-purple-600 to-pink-600 p-5 flex items-center justify-between' },
+                                    e('div', null,
+                                        e('h2', { className: 'text-white font-bold text-sm sm:text-base' }, `查詢歷史記錄 (${queryHistory.length})`),
+                                        e('p', { className: 'text-purple-200 text-xs mt-0.5' }, '記錄每次複製的查詢結果與當時查詢的版本')
+                                    ),
+                                    e('div', { className: 'flex gap-2' },
+                                        e('button', { onClick: handleExportHistory, className: 'px-3 py-1.5 bg-white text-purple-700 text-xs rounded-lg font-semibold flex items-center gap-1' }, e('i', { 'data-lucide': 'download', className: 'w-3 h-3' }), '匯出 CSV'),
+                                        e('button', { onClick: () => { if (confirm('確定要清空所有查詢歷史嗎？')) setQueryHistory([]); }, className: 'px-3 py-1.5 bg-red-600 text-white text-xs rounded-lg font-semibold' }, '清空')
+                                    )
+                                ),
+                                e('div', { ref: historyContainerRef, className: 'max-h-[250px] overflow-auto custom-scrollbar p-4' },
+                                    e('table', { className: 'w-full text-sm border-collapse' },
+                                        e('thead', null,
+                                            e('tr', { className: 'bg-gray-100 border-b border-gray-300 text-left text-gray-700 text-xs' },
+                                                e('th', { className: 'px-3 py-2 w-12' }, '序號'),
+                                                e('th', { className: 'px-3 py-2 w-36 truncate' }, '查詢版本'),
+                                                e('th', { className: 'px-3 py-2' }, '查詢結果'),
+                                                e('th', { className: 'px-3 py-2 whitespace-nowrap w-40' }, '時間'),
+                                                e('th', { className: 'px-3 py-2 w-12 text-center' }, '操作')
+                                            )
+                                        ),
+                                        e('tbody', { className: 'divide-y divide-gray-200 text-xs' },
+                                            queryHistory.map((h, i) => e('tr', { key: h.id, className: 'hover:bg-gray-50 group transition-colors' },
+                                                e('td', { className: 'px-3 py-2.5 text-gray-600' }, i + 1),
+                                                e('td', { className: 'px-3 py-2.5 font-medium text-purple-700 truncate max-w-[150px]' }, h.versionName || '預設版本'),
+                                                e('td', { className: 'px-3 py-2.5 font-mono text-gray-800 break-all' }, h.resultText),
+                                                e('td', { className: 'px-3 py-2.5 text-gray-500 whitespace-nowrap' }, h.timestamp),
+                                                // 單筆刪除歷史紀錄按鈕 (滑鼠懸停時自動浮現)
+                                                e('td', { className: 'px-3 py-2.5 text-center' }, 
+                                                    e('button', { 
+                                                        onClick: () => handleDeleteHistoryItem(h.id),
+                                                        className: 'p-1 text-red-500 hover:bg-red-100 rounded opacity-0 group-hover:opacity-100 transition-opacity' 
+                                                    }, e('i', { 'data-lucide': 'trash-2', className: 'w-3.5 h-3.5' }))
+                                                )
+                                            ))
+                                        )
+                                    )
+                                )
+                            ) : null,
+
+                            // 【順序 3】 ── 測試項目管理 ──
+                            e('div', { className: 'bg-white rounded-2xl shadow-xl overflow-hidden' },
+                                e('div', { 
+                                    onClick: () => setIsManageVisible(!isManageVisible),
+                                    className: 'bg-gradient-to-r from-emerald-600 to-green-600 p-5 flex items-center justify-between cursor-pointer select-none hover:brightness-95 transition-all' 
+                                    },
+                                    e('div', null,
+                                        e('h1', { className: 'text-white text-xl font-bold flex items-center gap-2' }, 
+                                            '測試項目管理',
+                                            e('span', { className: 'text-xs bg-emerald-500 text-emerald-100 px-2 py-0.5 rounded-full font-normal' }, isManageVisible ? '點擊隱藏' : '點擊展開')
+                                        ),
+                                        e('p', { className: 'text-green-100 text-sm mt-1' }, activeVersion ? `目前版本：${activeVersion.name}` : '請先選擇版本')
+                                    ),
+                                    e('i', { 'data-lucide': isManageVisible ? 'chevron-up' : 'chevron-down', className: 'w-6 h-6 text-white' })
+                                ),
+                                isManageVisible && e('div', { className: 'p-5 border-t border-gray-100 transition-all duration-300' },
+                                    e('div', { className: 'mb-5 p-3 bg-amber-50 rounded-lg border border-amber-200' },
+                                        e('h3', { className: 'font-semibold text-amber-900 mb-2 text-sm' }, '匯入測試項目'),
+                                        e('button', { onClick: () => fileInputRef.current?.click(), disabled: !activeVersion, className: 'w-full px-4 py-2 bg-emerald-600 text-white rounded-lg font-semibold flex items-center justify-center gap-2 text-sm disabled:bg-gray-300' }, e('i', { 'data-lucide': 'upload', className: 'w-4 h-4' }), '匯入 Excel / CSV 至目前版本'),
+                                        e('p', { className: 'mt-2 text-xs text-amber-700' }, '格式：第一欄 編號1@編號2，第二欄 測試項目名稱')
+                                    ),
+                                    e('div', { className: 'mb-5 p-3 bg-green-50 rounded-lg border border-green-200' },
+                                        e('h3', { className: 'font-semibold text-green-900 mb-3 text-sm' }, '手動新增測試項目'),
+                                        e('div', { className: 'space-y-2' },
+                                            e('input', { type: 'text', value: newNum1, onChange: e => setNewNum1(e.target.value), placeholder: '編號1（例如：111）', disabled: !activeVersion, className: 'w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:border-green-500 disabled:bg-gray-100' }),
+                                            e('input', { type: 'text', value: newNum2, onChange: e => setNewNum2(e.target.value), placeholder: '編號2（例如：2001）', disabled: !activeVersion, className: 'w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:border-green-500 disabled:bg-gray-100' }),
+                                            e('input', { type: 'text', value: newDesc, onChange: e => setNewDesc(e.target.value), placeholder: '測試項目（例如：Battery Right Voltage）', disabled: !activeVersion, className: 'w-full px-3 py-2 text-sm border-2 border-gray-300 rounded-lg focus:border-green-500 disabled:bg-gray-100' }),
+                                            e('button', { onClick: handleAddRecord, disabled: !activeVersion, className: 'w-full px-4 py-2 bg-green-600 text-white rounded-lg font-semibold flex items-center justify-center gap-2 text-sm disabled:bg-gray-300' }, e('i', { 'data-lucide': 'plus', className: 'w-4 h-4' }), '新增測試項目')
+                                        )
+                                    ),
+                                    e('div', null,
+                                        e('div', { className: 'flex items-center justify-between mb-2' },
+                                            e('h3', { className: 'font-semibold text-gray-700 text-sm' }, `現有測試項目 (${dataList.length} 筆)`, selectedIndices.size > 0 ? e('span', { className: 'text-blue-600 ml-2' }, `（已選 ${selectedIndices.size}）`) : null),
+                                            e('div', { className: 'flex gap-1.5' },
+                                                e('button', { onClick: toggleSelectAll, disabled: dataList.length === 0, className: 'px-2 py-1 text-xs bg-blue-600 text-white rounded-lg flex items-center gap-1 disabled:bg-gray-300' }, e('i', { 'data-lucide': selectedIndices.size === dataList.length && dataList.length > 0 ? 'square' : 'check-square', className: 'w-3 h-3' }), selectedIndices.size === dataList.length && dataList.length > 0 ? '取消全選' : '全選'),
+                                                e('button', { onClick: handleDeleteSelected, disabled: selectedIndices.size === 0, className: 'px-2 py-1 text-xs bg-red-600 text-white rounded-lg flex items-center gap-1 disabled:bg-gray-300' }, e('i', { 'data-lucide': 'trash-2', className: 'w-3 h-3' }), '刪除選中')
+                                            )
+                                        ),
+                                        e('div', { className: 'max-h-64 overflow-y-auto border-2 border-gray-200 rounded-lg bg-gray-50 custom-scrollbar' },
+                                            dataList.length === 0 ? e('div', { className: 'text-center text-gray-400 py-8 text-sm' }, activeVersion ? '尚無測試項目' : '請先在左側選擇版本') :
+                                            e('div', { className: 'divide-y divide-gray-200' },
+                                                dataList.map((item, idx) => e('div', { key: idx, className: `px-3 py-2 flex items-center gap-2 group transition-colors ${selectedIndices.has(idx) ? 'bg-blue-50' : 'hover:bg-gray-100'}` },
+                                                    e('input', { type: 'checkbox', checked: selectedIndices.has(idx), onChange: () => toggleSelectRecord(idx), className: 'w-3.5 h-3.5 text-blue-600 rounded cursor-pointer' }),
+                                                    e('div', { className: 'font-mono text-xs text-gray-800 flex-1 truncate' }, item),
+                                                    e('button', { onClick: () => handleDeleteRecord(idx), className: 'p-1 text-red-500 hover:bg-red-100 rounded opacity-0 group-hover:opacity-100 transition-opacity' }, e('i', { 'data-lucide': 'trash-2', className: 'w-3.5 h-3.5' }))
+                                                ))
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(e(App));
+    </script>
+</body>
+</html>
